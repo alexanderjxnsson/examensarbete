@@ -1,0 +1,17 @@
+Onsdag 28/12:
+	Done:
+	- Fått spelet att köra via datorn
+	- Skapade en yocto image la till de ändringar vi behövde
+	- Flashade till SD-kort
+	To-do:
+	- Lösa pygame till Yocto
+		Skapa ett eget recipe för pygame
+		Installe pipoe
+
+Onsdag 11/1:
+	- Fått wifi via core-image-base
+	- ifup wlan0
+	- pip install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org pygame
+	- wpa-applicant
+	
+	

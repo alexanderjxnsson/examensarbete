@@ -17,11 +17,11 @@ class Game:
         # health and score setup
         self.lives = 3
         self.live_surf = pygame.image.load(
-            '../graphics/player.png').convert_alpha()
+            'graphics/player.png').convert_alpha()
         self.live_x_start_pos = screen_width - \
             (self.live_surf.get_size()[0] * 2 + 20)
         self.score = 0
-        self.font = pygame.font.Font('../font/Pixeled.ttf', 20)
+        self.font = pygame.font.Font('font/Pixeled.ttf', 20)
 
         # Obstacle setup
         self.shape = obstacle.shape
@@ -44,12 +44,12 @@ class Game:
         self.extra_spawn_time = randint(40, 80)
 
         # Audio
-        music = pygame.mixer.Sound('../audio/music.wav')
+        music = pygame.mixer.Sound('audio/music.wav')
         music.set_volume(0.2)
         music.play(loops=-1)
-        self.laser_sound = pygame.mixer.Sound('../audio/laser.wav')
+        self.laser_sound = pygame.mixer.Sound('audio/laser.wav')
         self.laser_sound.set_volume(0.5)
-        self.explosion_sound = pygame.mixer.Sound('../audio/explosion.wav')
+        self.explosion_sound = pygame.mixer.Sound('audio/explosion.wav')
         self.explosion_sound.set_volume(0.3)
 
     def create_obstacle(self, x_start, y_start, offset_x):
@@ -195,7 +195,7 @@ class Game:
 
 class CRT:
     def __init__(self):
-        self.tv = pygame.image.load('../graphics/tv.png').convert_alpha()
+        self.tv = pygame.image.load('graphics/tv.png').convert_alpha()
         self.tv = pygame.transform.scale(
             self.tv, (screen_width, screen_height))
 

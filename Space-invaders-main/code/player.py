@@ -1,6 +1,9 @@
 import pygame
 from laser import Laser
+from gpiozero import Button
 
+left = Button(2)
+right = Button(3)
 
 class Player(pygame.sprite.Sprite):
     def __init__(self, pos, constraint, speed):
@@ -21,9 +24,9 @@ class Player(pygame.sprite.Sprite):
     def get_input(self):
         keys = pygame.key.get_pressed()
 
-        if keys[pygame.K_RIGHT]:
+        if left.is_pressed:
             self.rect.x += self.speed
-        elif keys[pygame.K_LEFT]:
+        if right.is_pressed:
             self.rect.x -= self.speed
 
         if keys[pygame.K_SPACE] and self.ready:

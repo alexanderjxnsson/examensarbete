@@ -171,6 +171,8 @@ class Game:
             victory_rect = victory_surf.get_rect(
                 center=(screen_width / 2, screen_height / 2))
             screen.blit(victory_surf, victory_rect)
+            pygame.quit()
+            sys.exit()
 
     def run(self):
         self.player.update()
@@ -217,7 +219,7 @@ if __name__ == '__main__':
     pygame.init()
     screen_width = 800
     screen_height = 480
-    screen = pygame.display.set_mode((screen_width, screen_height))
+    screen = pygame.display.set_mode((screen_width, screen_height), pygame.FULLSCREEN)
     clock = pygame.time.Clock()
     game = Game()
     crt = CRT()

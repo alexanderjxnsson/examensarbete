@@ -1,5 +1,6 @@
 import pygame
 from player import Player
+from main_menu import MainMenu
 
 class Game():
     def __init__(self):
@@ -11,6 +12,7 @@ class Game():
         self.window = pygame.display.set_mode(((self.DISPLAY_W, self.DISPLAY_H)))
         self.font_name = 'Space-side-scroller/Font/8-BIT_WONDER.TTF'
         self.BLACK, self.WHITE = (0, 0, 0), (255, 255, 255)
+        self.curr_menu = MainMenu(self)
 
     def game_loop(self):
         while self.playing:
@@ -27,6 +29,7 @@ class Game():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.running, self.playing = False, False
+                self.curr_menu.run_display = False
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RETURN:
                     self.START_KEY = True
@@ -46,11 +49,6 @@ class Game():
         text_rect = text_surface.get_rect()
         text_rect.center = (x, y)
         self.display.blit(text_surface, text_rect)
-
-
-
-
-
 
 
 # SCREEN_WITDH = 800

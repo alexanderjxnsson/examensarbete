@@ -13,5 +13,9 @@ Onsdag 11/1:
 	- ifup wlan0
 	- pip install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org pygame
 	- wpa-applicant
-	
-	
+
+Tisdag 24/1:
+	- Bestämde oss för att köra via Raspian för stunden för att komma vidare, la yocto åt sidan.
+	- Lyckades koppla in knappar och styra Space invaders.
+	- Köpte ADC till joysticken.
+	- Börjat med spelet i python

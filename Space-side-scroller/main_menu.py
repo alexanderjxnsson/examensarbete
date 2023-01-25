@@ -1,4 +1,5 @@
 import pygame
+import os
 
 class Menu():
     def __init__(self, game):
@@ -81,8 +82,8 @@ class MainMenu(Menu):
             if self.state == 'Quit':
                 pygame.display.quit()
                 exit()
+                #os.system("shutdown now -h")
             self.run_display = False
-
 
 
 """ SCREEN_WITDH = 800

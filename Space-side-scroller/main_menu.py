@@ -1,5 +1,6 @@
 import pygame
 import os
+import csv
 
 class Menu():
     def __init__(self, game):
@@ -88,28 +89,52 @@ class MainMenu(Menu):
 class OptionsMenu(Menu):
     def __init__(self, game):
         Menu.__init__(self, game)
-        self.state = 'Volume'
+        """ self.state = 'Volume'
         self.volx, self.voly = self.mid_w, self.mid_h + 20
-        self.controlsx, self.controlsy = self.mid_w, self.mid_h + 40
-        self.cursor_rect.midtop = (self.volx + self.offset, self.voly)
+        self.controlsx, self.controlsy = self.mid_w, self.mid_h + 40 
+        self.cursor_rect.midtop = (self.volx + self.offset, self.voly) """
+        self.highscorex, self.highscorey = self.mid_w, self.mid_h - 50
 
     def display_menu(self):
         self.run_display = True
+        scores = []
+        fileName = "Space-side-scroller/highscore.txt"
+        fileObj = open(fileName, 'r')
+        for line in fileObj.readlines():
+            scores.append(int(line))
+        #scores = fileObj.read().splitlines()
+        fileObj.close()
+        scores.sort(reverse=True)
+        """ with open(fileName, 'r') as file:
+            datareader = file.readlines()    
+        file.close() """
+            
+        print_hs = True
         while self.run_display:
             self.game.check_events()
             self.check_input()
             self.game.display.fill((0, 0, 0))
-            self.game.draw_text('Options', 20, self.game.DISPLAY_W / 2, self.game.DISPLAY_H / 2 - 30)
-            self.game.draw_text('Volume', 15, self.volx, self.voly)
-            self.game.draw_text('Controls', 15, self.controlsx, self.controlsy)
-            self.draw_cursor()
+            self.game.draw_text('Highscores', 30, self.game.DISPLAY_W / 2, self.game.DISPLAY_H / 2 - 100)
+            """ self.game.draw_text('Volume', 15, self.volx, self.voly)
+            self.game.draw_text('Controls', 15, self.controlsx, self.controlsy) """
+            
+            self.game.draw_text(str(scores[0]), 25, self.highscorex, self.highscorey)
+            self.game.draw_text(str(scores[1]), 25, self.highscorex, self.highscorey + 25)
+            self.game.draw_text(str(scores[2]), 25, self.highscorex, self.highscorey + 50)
+            self.game.draw_text(str(scores[3]), 25, self.highscorex, self.highscorey + 75)
+            self.game.draw_text(str(scores[4]), 25, self.highscorex, self.highscorey + 100)
+
+            # self.draw_cursor()
             self.blit_screen()
+
+            
+
 
     def check_input(self):
         if self.game.BACK_KEY:
             self.game.curr_menu = self.game.main_menu
             self.run_display = False
-        elif self.game.UP_KEY or self.game.DOWN_KEY:
+        """ elif self.game.UP_KEY or self.game.DOWN_KEY:
             if self.state == 'Volume':
                 self.cursor_rect.midtop = (self.controlsx + self.offset, self.controlsy)
                 self.state = 'Controls'
@@ -117,7 +142,7 @@ class OptionsMenu(Menu):
                 self.cursor_rect.midtop = (self.volx + self.offset, self.voly)
                 self.state = 'Volume'
         elif self.game.START_KEY:
-            pass
+            pass """
 
 class CreditsMenu(Menu):
     def __init__(self, game):

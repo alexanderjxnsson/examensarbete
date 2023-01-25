@@ -1,6 +1,5 @@
 import pygame
-from player import Player
-from main_menu import MainMenu
+from main_menu import *
 
 class Game():
     def __init__(self):
@@ -12,7 +11,10 @@ class Game():
         self.window = pygame.display.set_mode(((self.DISPLAY_W, self.DISPLAY_H)))
         self.font_name = 'Space-side-scroller/Font/8-BIT_WONDER.TTF'
         self.BLACK, self.WHITE = (0, 0, 0), (255, 255, 255)
-        self.curr_menu = MainMenu(self)
+        self.main_menu = MainMenu(self)
+        self.options = OptionsMenu(self)
+        self.credits = CreditsMenu(self)
+        self.curr_menu = self.main_menu
 
     def game_loop(self):
         while self.playing:

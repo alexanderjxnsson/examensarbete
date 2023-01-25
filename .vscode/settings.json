@@ -1,0 +1,5 @@
+{
+    "python.analysis.extraPaths": [
+        "./Space-side-scroller"
+    ]
+}

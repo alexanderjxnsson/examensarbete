@@ -1,6 +1,8 @@
 import pygame
 import os
-import csv
+
+scores = []
+fileName = "Space-side-scroller/highscore.txt"
 
 class Menu():
     def __init__(self, game):
@@ -96,20 +98,8 @@ class HighscoreMenu(Menu):
         self.highscorex, self.highscorey = self.mid_w, self.mid_h - 50
 
     def display_menu(self):
+        HighscoreMenu.read_highscore()
         self.run_display = True
-        scores = []
-        fileName = "Space-side-scroller/highscore.txt"
-        file = open(fileName, 'r')
-        for line in file.readlines():
-            scores.append(int(line))
-        #scores = file.read().splitlines()
-        file.close()
-        scores.sort(reverse=True)
-        """ with open(fileName, 'r') as file:
-            datareader = file.readlines()    
-        file.close() """
-            
-        print_hs = True
         while self.run_display:
             self.game.check_events()
             self.check_input()
@@ -127,9 +117,29 @@ class HighscoreMenu(Menu):
             # self.draw_cursor()
             self.blit_screen()
 
+    def read_highscore():
+        file = open(fileName, 'r')
+        for line in file.readlines():
+            scores.append(int(line))
+        scores.sort(reverse=True)
+        file.close()
+
+    def write_highscore(newScore):
+        file = open(fileName, 'a')
+        file.write(str(newScore) + '\n')
+        file.close()
+        
+        """ for x in scores:
+            if newScore > x:
+                x = newScore
+        file = open(fileName, 'w+')
+        file.write(str(scores)) """
+
+        """ with open(fileName, 'w') as file:
+            for item in scores:
+                # write each item on a new line
+                file.write("%s\n" % item) """
             
-
-
     def check_input(self):
         if self.game.BACK_KEY or self.game.START_KEY:
             self.game.curr_menu = self.game.main_menu

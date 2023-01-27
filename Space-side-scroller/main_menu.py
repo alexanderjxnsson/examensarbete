@@ -94,7 +94,7 @@ class HighscoreMenu(Menu):
         self.highscorex, self.highscorey = self.mid_w, self.mid_h - 50
 
     def display_menu(self):
-        HighscoreMenu.read_highscore()
+        scores.sort(reverse=True)
         self.run_display = True
         while self.run_display:
             self.game.check_events()
@@ -115,12 +115,14 @@ class HighscoreMenu(Menu):
         file = open(fileName, 'r')
         for line in file.readlines():
             scores.append(int(line))
-        scores.sort(reverse=True)
+        #scores.sort(reverse=True)
         file.close()
 
-    def write_highscore(newScore):
+    def write_highscore():
         file = open(fileName, 'a')
-        file.write(str(newScore) + '\n')
+        file.truncate(0)
+        for item in scores:
+            file.write(str(item) + '\n')
         file.close()
         
         """ for x in scores:

@@ -25,12 +25,13 @@ class Game():
             self.check_events()
             if self.START_KEY:
                 self.playing = False
+                scores.append(6999)
             self.display.fill(self.BLACK)
             self.draw_text("Thanks for playing", 20, self.DISPLAY_W/2, self.DISPLAY_H/2)
             self.window.blit(self.display, (0,0))
             pygame.display.update()
             self.reset_keys()
-        HighscoreMenu.write_highscore(7999)
+        
 
     def check_events(self):
         for event in pygame.event.get():

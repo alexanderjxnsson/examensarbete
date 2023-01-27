@@ -83,6 +83,7 @@ class MainMenu(Menu):
             if self.state == 'Credits':
                 self.game.curr_menu = self.game.credits
             if self.state == 'Quit':
+                HighscoreMenu.write_highscore()
                 pygame.display.quit()
                 exit() # remove when finished
                 # os.system("shutdown now -h")
@@ -91,68 +92,41 @@ class MainMenu(Menu):
 class HighscoreMenu(Menu):
     def __init__(self, game):
         Menu.__init__(self, game)
-        """ self.state = 'Volume'
-        self.volx, self.voly = self.mid_w, self.mid_h + 20
-        self.controlsx, self.controlsy = self.mid_w, self.mid_h + 40 
-        self.cursor_rect.midtop = (self.volx + self.offset, self.voly) """
         self.highscorex, self.highscorey = self.mid_w, self.mid_h - 50
 
     def display_menu(self):
-        HighscoreMenu.read_highscore()
+        scores.sort(reverse=True)
         self.run_display = True
         while self.run_display:
             self.game.check_events()
             self.check_input()
             self.game.display.fill((0, 0, 0))
             self.game.draw_text('Highscores', 30, self.game.DISPLAY_W / 2, self.game.DISPLAY_H / 2 - 100)
-            """ self.game.draw_text('Volume', 15, self.volx, self.voly)
-            self.game.draw_text('Controls', 15, self.controlsx, self.controlsy) """
-            
             self.game.draw_text(str(scores[0]), 25, self.highscorex, self.highscorey)
             self.game.draw_text(str(scores[1]), 25, self.highscorex, self.highscorey + 25)
             self.game.draw_text(str(scores[2]), 25, self.highscorex, self.highscorey + 50)
             self.game.draw_text(str(scores[3]), 25, self.highscorex, self.highscorey + 75)
             self.game.draw_text(str(scores[4]), 25, self.highscorex, self.highscorey + 100)
-
-            # self.draw_cursor()
             self.blit_screen()
 
     def read_highscore():
         file = open(fileName, 'r')
         for line in file.readlines():
             scores.append(int(line))
-        scores.sort(reverse=True)
+        #scores.sort(reverse=True)
         file.close()
 
-    def write_highscore(newScore):
+    def write_highscore():
         file = open(fileName, 'a')
-        file.write(str(newScore) + '\n')
+        file.truncate(0)
+        for item in scores:
+            file.write(str(item) + '\n')
         file.close()
-        
-        """ for x in scores:
-            if newScore > x:
-                x = newScore
-        file = open(fileName, 'w+')
-        file.write(str(scores)) """
-
-        """ with open(fileName, 'w') as file:
-            for item in scores:
-                # write each item on a new line
-                file.write("%s\n" % item) """
             
     def check_input(self):
         if self.game.BACK_KEY or self.game.START_KEY:
             self.game.curr_menu = self.game.main_menu
             self.run_display = False
-        """ elif self.game.UP_KEY or self.game.DOWN_KEY:
-            if self.state == 'Volume':
-                self.cursor_rect.midtop = (self.controlsx + self.offset, self.controlsy)
-                self.state = 'Controls'
-            elif self.state == 'Controls':
-                self.cursor_rect.midtop = (self.volx + self.offset, self.voly)
-                self.state = 'Volume'
-        elif self.game.START_KEY:
-            pass """
 
 class CreditsMenu(Menu):
     def __init__(self, game):
@@ -170,11 +144,6 @@ class CreditsMenu(Menu):
             self.game.draw_text('Adam Johansson Kusnierz', 20, self.game.DISPLAY_W / 2, self.game.DISPLAY_H / 2 + 10)
             self.game.draw_text('Alexander Jxnsson', 20, self.game.DISPLAY_W / 2, self.game.DISPLAY_H / 2 + 30)
             self.blit_screen()
-
-    
-
-
-
 
 
 """ SCREEN_WITDH = 800

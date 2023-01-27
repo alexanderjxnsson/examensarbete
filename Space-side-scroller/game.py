@@ -26,7 +26,7 @@ class Game():
             self.window.blit(self.display, (0,0))
             pygame.display.update()
             self.reset_keys()
-        HighscoreMenu.write_highscore(7999)
+        scores.append(7999)
 
     def check_events(self):
         for event in pygame.event.get():

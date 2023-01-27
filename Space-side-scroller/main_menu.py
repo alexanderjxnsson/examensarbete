@@ -91,10 +91,6 @@ class MainMenu(Menu):
 class HighscoreMenu(Menu):
     def __init__(self, game):
         Menu.__init__(self, game)
-        """ self.state = 'Volume'
-        self.volx, self.voly = self.mid_w, self.mid_h + 20
-        self.controlsx, self.controlsy = self.mid_w, self.mid_h + 40 
-        self.cursor_rect.midtop = (self.volx + self.offset, self.voly) """
         self.highscorex, self.highscorey = self.mid_w, self.mid_h - 50
 
     def display_menu(self):
@@ -105,8 +101,6 @@ class HighscoreMenu(Menu):
             self.check_input()
             self.game.display.fill((0, 0, 0))
             self.game.draw_text('Highscores', 30, self.game.DISPLAY_W / 2, self.game.DISPLAY_H / 2 - 100)
-            """ self.game.draw_text('Volume', 15, self.volx, self.voly)
-            self.game.draw_text('Controls', 15, self.controlsx, self.controlsy) """
             
             self.game.draw_text(str(scores[0]), 25, self.highscorex, self.highscorey)
             self.game.draw_text(str(scores[1]), 25, self.highscorex, self.highscorey + 25)
@@ -144,15 +138,6 @@ class HighscoreMenu(Menu):
         if self.game.BACK_KEY or self.game.START_KEY:
             self.game.curr_menu = self.game.main_menu
             self.run_display = False
-        """ elif self.game.UP_KEY or self.game.DOWN_KEY:
-            if self.state == 'Volume':
-                self.cursor_rect.midtop = (self.controlsx + self.offset, self.controlsy)
-                self.state = 'Controls'
-            elif self.state == 'Controls':
-                self.cursor_rect.midtop = (self.volx + self.offset, self.voly)
-                self.state = 'Volume'
-        elif self.game.START_KEY:
-            pass """
 
 class CreditsMenu(Menu):
     def __init__(self, game):
@@ -170,27 +155,3 @@ class CreditsMenu(Menu):
             self.game.draw_text('Adam Johansson Kusnierz', 20, self.game.DISPLAY_W / 2, self.game.DISPLAY_H / 2 + 10)
             self.game.draw_text('Alexander Jxnsson', 20, self.game.DISPLAY_W / 2, self.game.DISPLAY_H / 2 + 30)
             self.blit_screen()
-
-    
-
-
-
-
-
-""" SCREEN_WITDH = 800
-SCREEN_HEIGHT = 480
-
-screen = pygame.display.set_mode((SCREEN_WITDH, SCREEN_HEIGHT))
-pygame.display.set_caption('Main Menu')
-
-def menu():
-    background_img_menu = pygame.image.load('Space-side-scroller/Images/background_menu.jpg')
-    background_img_menu = pygame.transform.scale(background_img_menu, (900, 600))
-
-    while True:
-        screen.blit(background_img_menu, (0,0))
-        pygame.display.update()
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.display.quit()
-                exit() """

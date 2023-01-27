@@ -1,5 +1,9 @@
 import pygame
 from main_menu import *
+from gpiozero import Button
+
+start_btn = Button(18, pull_up=False)
+back_btn = Button(17, pull_up=False)
 
 class Game():
     def __init__(self):
@@ -34,14 +38,14 @@ class Game():
                 self.running, self.playing = False, False
                 self.curr_menu.run_display = False
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_RETURN:
-                    self.START_KEY = True
-                if event.key == pygame.K_BACKSPACE:
-                    self.BACK_KEY = True
                 if event.key == pygame.K_DOWN:
                     self.DOWN_KEY = True
                 if event.key == pygame.K_UP:
                     self.UP_KEY = True
+            if start_btn.is_pressed:
+                self.START_KEY = True
+            if back_btn.is_pressed:
+                self.BACK_KEY = True
     
     def reset_keys(self):
         self.UP_KEY, self.DOWN_KEY, self.START_KEY, self.BACK_KEY = False, False, False, False
@@ -52,28 +56,3 @@ class Game():
         text_rect = text_surface.get_rect()
         text_rect.center = (x, y)
         self.display.blit(text_surface, text_rect)
-
-
-# SCREEN_WITDH = 800
-# SCREEN_HEIGHT = 480
-
-# screen = pygame.display.set_mode((SCREEN_WITDH, SCREEN_HEIGHT))
-# pygame.display.set_caption('Shooter')
-
-# player1 = Player(200, 200, 18)
-
-# def main_game():
-#     run = True
-#     background_img_game = pygame.image.load('Space-side-scroller/Images/background_game.jpg')
-#     background_img_game = pygame.transform.scale(background_img_game, (1200, 500))
-#     while run:
-        
-#         screen.blit(background_img_game, (0,0))
-#         screen.blit(player1.image, player1.rect)
-#         pygame.display.update()
-
-
-#         for event in pygame.event.get():
-#             if event.type == pygame.QUIT:
-#                 pygame.display.quit()
-#                 run = False

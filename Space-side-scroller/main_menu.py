@@ -10,7 +10,7 @@ class Menu():
         self.mid_w, self.mid_h = self.game.DISPLAY_W / 2, self.game.DISPLAY_H / 2
         self.run_display = True
         self.cursor_rect = pygame.Rect(0, 0, 20, 20)
-        self.offset = -100
+        self.offset = -200
 
     def draw_cursor(self):
         self.game.draw_text('*', 15, self.cursor_rect.x, self.cursor_rect.y)
@@ -24,10 +24,10 @@ class MainMenu(Menu):
     def __init__(self, game):
         Menu.__init__(self, game)
         self.state = "Start"
-        self.startx, self.starty = self.mid_w, self.mid_h + 30
-        self.highscorex, self.highscorey = self.mid_w, self.mid_h + 50
-        self.creditsx, self.creditsy = self.mid_w, self.mid_h + 70
-        self.quitx, self.quity = self.mid_w, self.mid_h + 90
+        self.startx, self.starty = self.mid_w, self.mid_h + 40
+        self.highscorex, self.highscorey = self.mid_w, self.mid_h + 80
+        self.creditsx, self.creditsy = self.mid_w, self.mid_h + 120
+        self.quitx, self.quity = self.mid_w, self.mid_h + 160
         self.cursor_rect.midtop = (self.startx + self.offset, self.starty)
 
     def display_menu(self):
@@ -36,11 +36,11 @@ class MainMenu(Menu):
             self.game.check_events()
             self.check_input()
             self.game.display.fill(self.game.BLACK)
-            self.game.draw_text('Main menu', 20, self.game.DISPLAY_W / 2, self.game.DISPLAY_H / 2 - 20)
-            self.game.draw_text('Start game', 20, self.startx, self.starty)
-            self.game.draw_text('Highscore', 20, self.highscorex, self.highscorey)
-            self.game.draw_text('Credits', 20, self.creditsx, self.creditsy)
-            self.game.draw_text('Quit', 20, self.quitx, self.quity)
+            self.game.draw_text('Main menu', 40, self.game.DISPLAY_W / 2, self.game.DISPLAY_H / 2 - 100)
+            self.game.draw_text('Start game', 35, self.startx, self.starty)
+            self.game.draw_text('Highscore', 35, self.highscorex, self.highscorey)
+            self.game.draw_text('Credits', 35, self.creditsx, self.creditsy)
+            self.game.draw_text('Quit', 35, self.quitx, self.quity)
             self.draw_cursor()
             self.blit_screen()
 
@@ -98,12 +98,12 @@ class HighscoreMenu(Menu):
             self.game.check_events()
             self.check_input()
             self.game.display.fill((0, 0, 0))
-            self.game.draw_text('Highscores', 30, self.game.DISPLAY_W / 2, self.game.DISPLAY_H / 2 - 100)
-            self.game.draw_text(str(scores[0]), 25, self.highscorex, self.highscorey)
-            self.game.draw_text(str(scores[1]), 25, self.highscorex, self.highscorey + 25)
-            self.game.draw_text(str(scores[2]), 25, self.highscorex, self.highscorey + 50)
-            self.game.draw_text(str(scores[3]), 25, self.highscorex, self.highscorey + 75)
-            self.game.draw_text(str(scores[4]), 25, self.highscorex, self.highscorey + 100)
+            self.game.draw_text('Highscores', 40, self.game.DISPLAY_W / 2, self.game.DISPLAY_H / 2 - 100)
+            self.game.draw_text(str(scores[0]), 35, self.highscorex, self.highscorey)
+            self.game.draw_text(str(scores[1]), 35, self.highscorex, self.highscorey + 40)
+            self.game.draw_text(str(scores[2]), 35, self.highscorex, self.highscorey + 80)
+            self.game.draw_text(str(scores[3]), 35, self.highscorex, self.highscorey + 120)
+            self.game.draw_text(str(scores[4]), 35, self.highscorex, self.highscorey + 160)
             self.blit_screen()
 
     def read_highscore():
@@ -137,17 +137,17 @@ class CreditsMenu(Menu):
                 self.game.curr_menu = self.game.main_menu
                 self.run_display = False
             self.game.display.fill(self.game.BLACK)
-            self.game.draw_text('Credits', 20, self.game.DISPLAY_W / 2, self.game.DISPLAY_H / 2 - 20)
-            self.game.draw_text('Adam Johansson Kusnierz', 20, self.game.DISPLAY_W / 2, self.game.DISPLAY_H / 2 + 10)
-            self.game.draw_text('Alexander Jxnsson', 20, self.game.DISPLAY_W / 2, self.game.DISPLAY_H / 2 + 30)
+            self.game.draw_text('Credits', 40, self.game.DISPLAY_W / 2, self.game.DISPLAY_H / 2 - 30)
+            self.game.draw_text('Adam Johansson Kusnierz', 35, self.game.DISPLAY_W / 2, self.game.DISPLAY_H / 2 + 20)
+            self.game.draw_text('Alexander Jxnsson', 35, self.game.DISPLAY_W / 2, self.game.DISPLAY_H / 2 + 60)
             self.blit_screen()
 
 class QuitMenu(Menu):
     def __init__(self, game):
         Menu.__init__(self, game)
         self.state = 'No'
-        self.nox, self.noy = self.mid_w, self.mid_h +20
-        self.yesx, self.yesy = self.mid_w, self.mid_h + 40
+        self.nox, self.noy = self.mid_w, self.mid_h + 20
+        self.yesx, self.yesy = self.mid_w, self.mid_h + 60
         self.cursor_rect.midtop = (self.nox + self.offset, self.noy)
 
     def display_menu(self):
@@ -156,9 +156,9 @@ class QuitMenu(Menu):
             self.game.check_events()
             self.check_input()
             self.game.display.fill((0, 0, 0))
-            self.game.draw_text('Are you sure', 20, self.game.DISPLAY_W / 2, self.game.DISPLAY_H / 2 - 30)
-            self.game.draw_text('No', 15, self.nox, self.noy)
-            self.game.draw_text('Yes', 15, self.yesx, self.yesy)
+            self.game.draw_text('Are you sure', 40, self.game.DISPLAY_W / 2, self.game.DISPLAY_H / 2 - 30)
+            self.game.draw_text('No', 35, self.nox, self.noy)
+            self.game.draw_text('Yes', 35, self.yesx, self.yesy)
             self.draw_cursor()
             self.blit_screen()
 

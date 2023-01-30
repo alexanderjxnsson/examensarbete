@@ -14,6 +14,7 @@ class Game():
         self.main_menu = MainMenu(self)
         self.highscore = HighscoreMenu(self)
         self.credits = CreditsMenu(self)
+        self.quit = QuitMenu(self)
         self.curr_menu = self.main_menu
 
     def game_loop(self):

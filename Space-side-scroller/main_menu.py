@@ -83,10 +83,7 @@ class MainMenu(Menu):
             if self.state == 'Credits':
                 self.game.curr_menu = self.game.credits
             if self.state == 'Quit':
-                HighscoreMenu.write_highscore()
-                pygame.display.quit()
-                exit() # remove when finished
-                # os.system("shutdown now -h")
+                self.game.curr_menu = self.game.quit  
             self.run_display = False
 
 class HighscoreMenu(Menu):
@@ -145,6 +142,46 @@ class CreditsMenu(Menu):
             self.game.draw_text('Alexander Jxnsson', 20, self.game.DISPLAY_W / 2, self.game.DISPLAY_H / 2 + 30)
             self.blit_screen()
 
+class QuitMenu(Menu):
+    def __init__(self, game):
+        Menu.__init__(self, game)
+        self.state = 'No'
+        self.nox, self.noy = self.mid_w, self.mid_h +20
+        self.yesx, self.yesy = self.mid_w, self.mid_h + 40
+        self.cursor_rect.midtop = (self.nox + self.offset, self.noy)
+
+    def display_menu(self):
+        self.run_display = True
+        while self.run_display:
+            self.game.check_events()
+            self.check_input()
+            self.game.display.fill((0, 0, 0))
+            self.game.draw_text('Are you sure', 20, self.game.DISPLAY_W / 2, self.game.DISPLAY_H / 2 - 30)
+            self.game.draw_text('No', 15, self.nox, self.noy)
+            self.game.draw_text('Yes', 15, self.yesx, self.yesy)
+            self.draw_cursor()
+            self.blit_screen()
+
+    def check_input(self):
+        if self.game.BACK_KEY:
+            self.game.curr_menu = self.game.main_menu
+            self.run_display = False
+        elif self.game.UP_KEY or self.game.DOWN_KEY:
+            if self.state == 'No':
+                self.state = 'Yes'
+                self.cursor_rect.midtop = (self.yesx + self.offset, self.yesy)
+            elif self.state == 'Yes':
+                self.state = 'No'
+                self.cursor_rect.midtop = (self.nox + self.offset, self.noy)
+        elif self.game.START_KEY:
+            if self.state == 'No':
+                self.game.curr_menu = self.game.main_menu
+                self.run_display = False
+            elif self.state == 'Yes':
+                HighscoreMenu.write_highscore()
+                pygame.display.quit()
+                exit() # remove when finished
+                # os.system("shutdown now -h")
 
 """ SCREEN_WITDH = 800
 SCREEN_HEIGHT = 480

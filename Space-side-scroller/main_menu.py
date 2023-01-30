@@ -110,14 +110,17 @@ class HighscoreMenu(Menu):
         file = open(fileName, 'r')
         for line in file.readlines():
             scores.append(int(line))
-        #scores.sort(reverse=True)
         file.close()
 
-    def write_highscore():
+    def write_highscore(fill_list):
         file = open(fileName, 'a')
-        file.truncate(0)
-        for item in scores:
-            file.write(str(item) + '\n')
+        if fill_list == 1:
+            for x in range(0, 5):
+                file.write(str(0) + '\n')
+        else :
+            file.truncate(0)
+            for x in range(0, 5):
+                file.write(str(scores[x]) + '\n')
         file.close()
             
     def check_input(self):
@@ -178,7 +181,7 @@ class QuitMenu(Menu):
                 self.game.curr_menu = self.game.main_menu
                 self.run_display = False
             elif self.state == 'Yes':
-                HighscoreMenu.write_highscore()
+                HighscoreMenu.write_highscore(False)
                 pygame.display.quit()
                 exit() # remove when finished
                 # os.system("shutdown now -h")

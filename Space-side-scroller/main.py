@@ -1,9 +1,11 @@
 from game import Game
 from main_menu import *
 
-if not scores:  # Checking if file is empty, if so we write five zeros to fill up.
+HighscoreMenu.read_highscore()  # Read file 
+
+if not scores:  # Checking if list is empty, if so we write five zeros to fill up.
     HighscoreMenu.write_highscore(True) # So we don't get any errors while entering the highscore menu
-HighscoreMenu.read_highscore() # Read our file and save to list
+    HighscoreMenu.read_highscore() # Read our file and save to list
 
 g = Game()
 while g.running:

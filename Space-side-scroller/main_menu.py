@@ -107,14 +107,18 @@ class HighscoreMenu(Menu):
             self.blit_screen()
 
     def read_highscore():
-        file = open(fileName, 'r')
+        if not os.path.isfile(fileName):
+            file = open(fileName, 'w+')
+        else:
+            file = open(fileName, 'r')
         for line in file.readlines():
             scores.append(int(line))
         file.close()
 
     def write_highscore(fill_list):
         file = open(fileName, 'a')
-        if fill_list == 1:
+        scores.sort(reverse=True)
+        if fill_list:
             for x in range(0, 5):
                 file.write(str(0) + '\n')
         else :

@@ -1,6 +1,20 @@
 import pygame
 from main_menu import *
 from gpiozero import Button
+import board
+import busio
+import adafruit_ads1x15.ads1115 as ADS
+from adafruit_ads1x15.analog_in import AnalogIn
+
+# Create the I2C bus
+i2c = busio.I2C(board.SCL, board.SDA)
+
+# Create the ADC object using the I2C bus
+ads = ADS.ADS1115(i2c)
+
+# Create single-ended input on channel 0
+chanX = AnalogIn(ads, ADS.P0)
+chanY = AnalogIn(ads, ADS.P1)
 
 start_btn = Button(18, pull_up=False)
 back_btn = Button(17, pull_up=False)
@@ -43,10 +57,14 @@ class Game():
                     self.DOWN_KEY = True
                 if event.key == pygame.K_UP:
                     self.UP_KEY = True
-            if start_btn.is_pressed:
-                self.START_KEY = True
-            if back_btn.is_pressed:
-                self.BACK_KEY = True
+        if chanX < 13:
+            self.DOWN_KEY = True
+        if chanX > 13:
+            self.UP_KEY = True
+        if start_btn.is_pressed:
+            self.START_KEY = True
+        if back_btn.is_pressed:
+            self.BACK_KEY = True
     
     def reset_keys(self):
         self.UP_KEY, self.DOWN_KEY, self.START_KEY, self.BACK_KEY = False, False, False, False

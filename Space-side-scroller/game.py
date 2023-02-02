@@ -1,6 +1,6 @@
 import pygame
 from main_menu import *
-from gpiozero import Button
+import gpiozero
 import board
 import busio
 import adafruit_ads1x15.ads1115 as ADS
@@ -16,12 +16,13 @@ ads = ADS.ADS1115(i2c)
 chanX = AnalogIn(ads, ADS.P0)
 chanY = AnalogIn(ads, ADS.P1)
 
-start_btn = Button(18, pull_up=False)
-back_btn = Button(17, pull_up=False)
+start_btn = gpiozero.Button(18, pull_up=False)
+back_btn = gpiozero.Button(17, pull_up=False)
 
 class Game():
     def __init__(self):
         pygame.init()
+        pygame.mouse.set_visible(False)
         self.running, self.playing = True, False
         self.UP_KEY, self.DOWN_KEY, self.START_KEY, self.BACK_KEY = False, False, False, False
         self.DISPLAY_W, self.DISPLAY_H = 800, 480
@@ -33,6 +34,8 @@ class Game():
         self.highscore = HighscoreMenu(self)
         self.credits = CreditsMenu(self)
         self.curr_menu = self.main_menu
+        start_btn.when_pressed = self.start_pressed
+        back_btn.when_pressed = self.back_pressed
 
     def game_loop(self):
         while self.playing:
@@ -45,26 +48,41 @@ class Game():
             self.window.blit(self.display, (0,0))
             pygame.display.update()
             self.reset_keys()
+    
+    def start_pressed(self):
+        self.START_KEY = True
+    def back_pressed(self):
+        self.BACK_KEY = True
         
-
     def check_events(self):
+    
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.running, self.playing = False, False
                 self.curr_menu.run_display = False
             if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_RETURN:
+                    self.START_KEY = True
+                if event.key == pygame.K_BACKSPACE:
+                    self.BACK_KEY = True
                 if event.key == pygame.K_DOWN:
                     self.DOWN_KEY = True
                 if event.key == pygame.K_UP:
                     self.UP_KEY = True
-        if chanY.value / 1000 < 8:
+        if (self.main_menu.joystick_timer >= 1) and (chanY.value / 55 < 235):
             self.DOWN_KEY = True
-        if chanY.value / 1000 > 22:
+            self.main_menu.joystick_timer = 0
+        else:
+            self.main_menu.joystick_timer += self.main_menu.dt
+        if (self.main_menu.joystick_timer >= 1) and (chanY.value / 55 > 245):
             self.UP_KEY = True
-        if start_btn.is_pressed:
-            self.START_KEY = True
-        if back_btn.is_pressed:
-            self.BACK_KEY = True
+            self.main_menu.joystick_timer = 0
+        else:
+            self.main_menu.joystick_timer += self.main_menu.dt
+        # if start_btn.is_pressed:
+        #     self.START_KEY = True
+        # if back_btn.is_pressed:
+        #     self.BACK_KEY = True
     
     def reset_keys(self):
         self.UP_KEY, self.DOWN_KEY, self.START_KEY, self.BACK_KEY = False, False, False, False

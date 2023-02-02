@@ -2,7 +2,7 @@ import pygame
 import os
 
 scores = []
-fileName = "Space-side-scroller/highscore.txt"
+fileName = "highscore.txt"
 
 class Menu():
     def __init__(self, game):

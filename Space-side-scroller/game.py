@@ -26,8 +26,8 @@ class Game():
         self.UP_KEY, self.DOWN_KEY, self.START_KEY, self.BACK_KEY = False, False, False, False
         self.DISPLAY_W, self.DISPLAY_H = 800, 480
         self.display = pygame.Surface((self.DISPLAY_W, self.DISPLAY_H))
-        self.window = pygame.display.set_mode(((self.DISPLAY_W, self.DISPLAY_H)))
-        self.font_name = 'Space-side-scroller/Font/8-BIT_WONDER.TTF'
+        self.window = pygame.display.set_mode(((self.DISPLAY_W, self.DISPLAY_H)), pygame.FULLSCREEN)
+        self.font_name = 'Font/8-BIT_WONDER.TTF'
         self.BLACK, self.WHITE = (0, 0, 0), (255, 255, 255)
         self.main_menu = MainMenu(self)
         self.highscore = HighscoreMenu(self)
@@ -57,9 +57,9 @@ class Game():
                     self.DOWN_KEY = True
                 if event.key == pygame.K_UP:
                     self.UP_KEY = True
-        if chanX < 13:
+        if chanY.value / 1000 < 8:
             self.DOWN_KEY = True
-        if chanX > 13:
+        if chanY.value / 1000 > 22:
             self.UP_KEY = True
         if start_btn.is_pressed:
             self.START_KEY = True

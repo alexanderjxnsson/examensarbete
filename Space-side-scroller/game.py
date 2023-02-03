@@ -1,5 +1,6 @@
 import pygame
 from main_menu import *
+import math
 
 
 
@@ -11,6 +12,13 @@ class Game():
         self.UP_KEY, self.DOWN_KEY, self.START_KEY, self.BACK_KEY = False, False, False, False
         self.DISPLAY_W, self.DISPLAY_H = 800, 480
         self.display = pygame.Surface((self.DISPLAY_W, self.DISPLAY_H))
+        pygame.display.set_caption("Space Sider Scroller")
+        self.BLACK, self.WHITE = (0, 0, 0), (255, 255, 255)
+        self.main_menu = MainMenu(self)
+        self.highscore = HighscoreMenu(self)
+        self.credits = CreditsMenu(self)
+        self.quit = QuitMenu(self)
+        self.curr_menu = self.main_menu
         if rpi:
             import gpiozero
             import board
@@ -34,26 +42,40 @@ class Game():
             self.start_btn.when_held = self.start_pressed
             self.back_btn.when_held = self.back_pressed
             self.font_name = 'Font/8-BIT_WONDER.TTF'
+            self.bg_img_menu = pygame.image.load('Images/bg_menu.jpg')
+            self.bg_img_game = pygame.image.load('Images/bg_game.jpg')
+            self.testing = pygame.image.load('Images/testing.png')
         else:
+            self.bg_img_menu = pygame.image.load('Space-side-scroller/Images/bg_menu.jpg')
+            self.bg_img_game = pygame.image.load('Space-side-scroller/Images/bg_game.jpg')
+            self.testing = pygame.image.load('Space-side-scroller/Images/testing.png')
             self.window = pygame.display.set_mode(((self.DISPLAY_W, self.DISPLAY_H)))
             self.font_name = 'Space-side-scroller/Font/8-BIT_WONDER.TTF'
-            
-        
-        self.BLACK, self.WHITE = (0, 0, 0), (255, 255, 255)
-        self.main_menu = MainMenu(self)
-        self.highscore = HighscoreMenu(self)
-        self.credits = CreditsMenu(self)
-        self.quit = QuitMenu(self)
-        self.curr_menu = self.main_menu
+        self.bg_img_menu = pygame.transform.scale(self.bg_img_menu, (900, 600))
+        self.bg_img_game = pygame.transform.scale(self.bg_img_game, (1200, 500))
+        self.testing_width = self.testing.get_width()
+        self.scroll = 0
+        self.tiles = 3
+        self.FPS = 60
+        self.clock = pygame.time.Clock()
+        #self.testing_rect = self.testing.get_rect()
         
 
     def game_loop(self):
         while self.playing:
+            self.clock.tick(self.FPS)
             self.check_events()
             if self.START_KEY:
                 self.playing = False
                 scores.append(7999)
-            self.display.fill(self.BLACK)
+            #self.display.fill(self.BLACK)
+            for i in range(0, self.tiles):
+                self.display.blit(self.testing, (i * self.testing_width + self.scroll, 0))
+                #self.testing_rect.x = i * self.testing_width + self.scroll
+                #pygame.draw.rect(self.display, (255, 0, 0), self.testing_rect, 1)
+            self.scroll -= 5
+            if abs(self.scroll) > self.testing_width:
+                self.scroll = 0
             self.draw_text("Thanks for playing", 20, self.DISPLAY_W/2, self.DISPLAY_H/2)
             self.window.blit(self.display, (0,0))
             pygame.display.update()

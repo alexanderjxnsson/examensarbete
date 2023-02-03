@@ -39,7 +39,8 @@ class MainMenu(Menu):
         while self.run_display:
             self.game.check_events()
             self.check_input()
-            self.game.display.fill(self.game.BLACK)
+            #self.game.display.fill(self.game.BLACK)
+            self.game.display.blit(self.game.bg_img_menu, (0,0))
             self.game.draw_text('Main menu', 40, self.game.DISPLAY_W / 2, self.game.DISPLAY_H / 2 - 100)
             self.game.draw_text('Start game', 35, self.startx, self.starty)
             self.game.draw_text('Highscore', 35, self.highscorex, self.highscorey)
@@ -102,7 +103,8 @@ class HighscoreMenu(Menu):
         while self.run_display:
             self.game.check_events()
             self.check_input()
-            self.game.display.fill((0, 0, 0))
+            #self.game.display.fill((0, 0, 0))
+            self.game.display.blit(self.game.bg_img_menu, (0,0))
             self.game.draw_text('Highscores', 40, self.game.DISPLAY_W / 2, self.game.DISPLAY_H / 2 - 100)
             self.game.draw_text(str(scores[0]), 35, self.highscorex, self.highscorey)
             self.game.draw_text(str(scores[1]), 35, self.highscorex, self.highscorey + 40)
@@ -148,7 +150,8 @@ class CreditsMenu(Menu):
             if self.game.START_KEY or self.game.BACK_KEY:
                 self.game.curr_menu = self.game.main_menu
                 self.run_display = False
-            self.game.display.fill(self.game.BLACK)
+            #self.game.display.fill(self.game.BLACK)
+            self.game.display.blit(self.game.bg_img_menu, (0,0))
             self.game.draw_text('Credits', 40, self.game.DISPLAY_W / 2, self.game.DISPLAY_H / 2 - 30)
             self.game.draw_text('Adam Johansson Kusnierz', 35, self.game.DISPLAY_W / 2, self.game.DISPLAY_H / 2 + 20)
             self.game.draw_text('Alexander Jxnsson', 35, self.game.DISPLAY_W / 2, self.game.DISPLAY_H / 2 + 60)
@@ -168,7 +171,8 @@ class QuitMenu(Menu):
         while self.run_display:
             self.game.check_events()
             self.check_input()
-            self.game.display.fill((0, 0, 0))
+            #self.game.display.fill((0, 0, 0))
+            self.game.display.blit(self.game.bg_img_menu, (0,0))
             self.game.draw_text('Are you sure', 40, self.game.DISPLAY_W / 2, self.game.DISPLAY_H / 2 - 30)
             self.game.draw_text('No', 35, self.nox, self.noy)
             self.game.draw_text('Yes', 35, self.yesx, self.yesy)
@@ -204,11 +208,11 @@ screen = pygame.display.set_mode((SCREEN_WITDH, SCREEN_HEIGHT))
 pygame.display.set_caption('Main Menu')
 
 def menu():
-    background_img_menu = pygame.image.load('Space-side-scroller/Images/background_menu.jpg')
-    background_img_menu = pygame.transform.scale(background_img_menu, (900, 600))
+    bg_img_menu = pygame.image.load('Space-side-scroller/Images/bg_menu.jpg')
+    bg_img_menu = pygame.transform.scale(bg_img_menu, (900, 600))
 
     while True:
-        screen.blit(background_img_menu, (0,0))
+        screen.blit(bg_img_menu, (0,0))
         pygame.display.update()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:

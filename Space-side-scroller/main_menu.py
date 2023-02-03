@@ -1,11 +1,13 @@
 import pygame
 import os
+from global_var import *
+#rpi = False
 
 scores = []
-fileName = "highscore.txt"
 
 class Menu():
     def __init__(self, game):
+        
         self.game = game
         self.mid_w, self.mid_h = self.game.DISPLAY_W / 2, self.game.DISPLAY_H / 2
         self.run_display = True

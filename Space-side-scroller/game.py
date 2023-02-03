@@ -27,12 +27,12 @@ class Game():
             self.chanX = AnalogIn(ads, ADS.P0)
             self.chanY = AnalogIn(ads, ADS.P1)
 
-            start_btn = gpiozero.Button(18, pull_up=False)
-            back_btn = gpiozero.Button(17, pull_up=False)
+            self.start_btn = gpiozero.Button(18, pull_up=False, hold_time=0.05, hold_repeat=False)
+            self.back_btn = gpiozero.Button(17, pull_up=False, hold_time=0.05, hold_repeat=False)
 
             self.window = pygame.display.set_mode(((self.DISPLAY_W, self.DISPLAY_H)), pygame.FULLSCREEN)
-            start_btn.when_pressed = self.start_pressed
-            back_btn.when_pressed = self.back_pressed
+            self.start_btn.when_held = self.start_pressed
+            self.back_btn.when_held = self.back_pressed
             self.font_name = 'Font/8-BIT_WONDER.TTF'
         else:
             self.window = pygame.display.set_mode(((self.DISPLAY_W, self.DISPLAY_H)))
@@ -65,7 +65,6 @@ class Game():
         self.BACK_KEY = True
         
     def check_events(self):
-    
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.running, self.playing = False, False
@@ -90,10 +89,6 @@ class Game():
                 self.main_menu.joystick_timer = 0
             else:
                 self.main_menu.joystick_timer += self.main_menu.dt
-        # if start_btn.is_pressed:
-        #     self.START_KEY = True
-        # if back_btn.is_pressed:
-        #     self.BACK_KEY = True
     
     def reset_keys(self):
         self.UP_KEY, self.DOWN_KEY, self.START_KEY, self.BACK_KEY = False, False, False, False

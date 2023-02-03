@@ -161,6 +161,7 @@ class QuitMenu(Menu):
         self.nox, self.noy = self.mid_w, self.mid_h + 20
         self.yesx, self.yesy = self.mid_w, self.mid_h + 60
         self.cursor_rect.midtop = (self.nox + self.offset, self.noy)
+        self.clock = pygame.time.Clock()
 
     def display_menu(self):
         self.run_display = True
@@ -173,6 +174,7 @@ class QuitMenu(Menu):
             self.game.draw_text('Yes', 35, self.yesx, self.yesy)
             self.draw_cursor()
             self.blit_screen()
+            self.dt = self.clock.tick(60) / 1000
 
     def check_input(self):
         if self.game.BACK_KEY:

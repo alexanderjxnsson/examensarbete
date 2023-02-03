@@ -2,7 +2,7 @@ import pygame
 import os
 
 scores = []
-fileName = "Space-side-scroller/highscore.txt"
+fileName = "highscore.txt"
 
 class Menu():
     def __init__(self, game):
@@ -11,7 +11,6 @@ class Menu():
         self.run_display = True
         self.cursor_rect = pygame.Rect(0, 0, 20, 20)
         self.offset = -200
-
     def draw_cursor(self):
         self.game.draw_text('*', 15, self.cursor_rect.x, self.cursor_rect.y)
 
@@ -29,6 +28,9 @@ class MainMenu(Menu):
         self.creditsx, self.creditsy = self.mid_w, self.mid_h + 120
         self.quitx, self.quity = self.mid_w, self.mid_h + 160
         self.cursor_rect.midtop = (self.startx + self.offset, self.starty)
+        self.dt = 0
+        self.clock = pygame.time.Clock()
+        self.joystick_timer = 0
 
     def display_menu(self):
         self.run_display = True
@@ -43,6 +45,7 @@ class MainMenu(Menu):
             self.game.draw_text('Quit', 35, self.quitx, self.quity)
             self.draw_cursor()
             self.blit_screen()
+            self.dt = self.clock.tick(60) / 1000
 
     def move_cursor(self):
         if self.game.DOWN_KEY:

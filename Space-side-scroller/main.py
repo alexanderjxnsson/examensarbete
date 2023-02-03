@@ -10,5 +10,4 @@ if not scores:  # Checking if list is empty, if so we write five zeros to fill u
 g = Game()
 while g.running:
     g.curr_menu.display_menu()
-    #g.playing = True
     g.game_loop()

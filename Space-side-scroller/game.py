@@ -12,6 +12,7 @@ class Game():
         self.UP_KEY, self.DOWN_KEY, self.START_KEY, self.BACK_KEY = False, False, False, False
         self.DISPLAY_W, self.DISPLAY_H = 800, 480
         self.display = pygame.Surface((self.DISPLAY_W, self.DISPLAY_H))
+        
         pygame.display.set_caption("Space Sider Scroller")
         self.BLACK, self.WHITE = (0, 0, 0), (255, 255, 255)
         self.main_menu = MainMenu(self)
@@ -58,7 +59,10 @@ class Game():
         self.tiles = 3
         self.FPS = 60
         self.clock = pygame.time.Clock()
-        #self.testing_rect = self.testing.get_rect()
+        self.ship = pygame.image.load(player_ship)
+        self.ship = pygame.transform.scale(self.ship, (127, 162))
+        self.ship_x = 0
+        self.ship_y = self.DISPLAY_H / 2 - 81
         
 
     def game_loop(self):
@@ -71,12 +75,10 @@ class Game():
             #self.display.fill(self.BLACK)
             for i in range(0, self.tiles):
                 self.display.blit(self.testing, (i * self.testing_width + self.scroll, 0))
-                #self.testing_rect.x = i * self.testing_width + self.scroll
-                #pygame.draw.rect(self.display, (255, 0, 0), self.testing_rect, 1)
             self.scroll -= 5
             if abs(self.scroll) > self.testing_width:
                 self.scroll = 0
-            self.draw_text("Thanks for playing", 20, self.DISPLAY_W/2, self.DISPLAY_H/2)
+            self.display.blit(self.ship, (self.ship_x, self.ship_y))
             self.window.blit(self.display, (0,0))
             pygame.display.update()
             self.reset_keys()
@@ -98,19 +100,35 @@ class Game():
                     self.BACK_KEY = True
                 if event.key == pygame.K_DOWN:
                     self.DOWN_KEY = True
+                    self.ship_y += 5
                 if event.key == pygame.K_UP:
                     self.UP_KEY = True
+                    self.ship_y -= 5
+                if event.key == pygame.K_LEFT:
+                    self.LEFT_KEY = True
+                    self.ship_x -= 5
+                if event.key == pygame.K_RIGHT:
+                    self.RIGHT_KEY = True
+                    self.ship_x += 5
         if rpi:
-            if (self.main_menu.joystick_timer >= 1) and (self.chanY.value / 55 < 235):
+            if (self.main_menu.joystick_timer >= 1) and (self.chanY.value / 55 < 235): # Y DOWN
                 self.DOWN_KEY = True
+                self.ship_y += 5
                 self.main_menu.joystick_timer = 0
-            else:
-                self.main_menu.joystick_timer += self.main_menu.dt
-            if (self.main_menu.joystick_timer >= 1) and (self.chanY.value / 55 > 245):
+            elif (self.main_menu.joystick_timer >= 1) and (self.chanY.value / 55 > 245): # Y UP
                 self.UP_KEY = True
+                self.ship_y -= 5
+                self.main_menu.joystick_timer = 0 
+            elif (self.main_menu.joystick_timer >= 1) and (self.chanX.value / 55 > 405): # X RIGHT
+                self.RIGHT_KEY = True
+                self.ship_x += 5
+                self.main_menu.joystick_timer = 0
+            elif (self.main_menu.joystick_timer >= 1) and (self.chanX.value / 55 < 395): # X LEFT
+                self.LEFT_KEY = True
+                self.ship_x -= 5
                 self.main_menu.joystick_timer = 0
             else:
-                self.main_menu.joystick_timer += self.main_menu.dt
+                self.main_menu.joystick_timer += self.main_menu.dt    
     
     def reset_keys(self):
         self.UP_KEY, self.DOWN_KEY, self.START_KEY, self.BACK_KEY = False, False, False, False

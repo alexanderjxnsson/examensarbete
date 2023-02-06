@@ -73,7 +73,7 @@ class Game():
             self.clock.tick(self.FPS)
             self.check_events()
             if self.START_KEY:
-                self.playing = False
+                self.PAUSE = True
                 scores.append(7999)
             #self.display.fill(self.BLACK)
             for i in range(0, self.tiles):
@@ -95,6 +95,11 @@ class Game():
             if keys[pygame.K_RIGHT]:
                 if self.ship_x <= self.max_right:
                     self.ship_x += self.ship_speed
+            while not self.playing:
+                self.draw_text('PAUSED', 40, self.DISPLAY_W / 2, self.DISPLAY_H / 2 - 100)
+                self.check_events()
+                self.window.blit(self.display, (0,0))
+                pygame.display.update()
             pygame.display.update()
             self.reset_keys()
  
@@ -106,11 +111,17 @@ class Game():
     def check_events(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                self.running, self.playing = False, False
-                self.curr_menu.run_display = False
+                self.running = False
+                pygame.display.quit()
+                pygame.quit()
+                exit()
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RETURN:
                     self.START_KEY = True
+                    if self.playing == True:
+                        self.playing = False
+                    elif self.playing == False:
+                        self.playing = True
                 if event.key == pygame.K_BACKSPACE:
                     self.BACK_KEY = True
                 if event.key == pygame.K_DOWN:

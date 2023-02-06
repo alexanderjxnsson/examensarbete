@@ -1,17 +1,18 @@
 import pygame
 import os
+from global_var import *
+#rpi = False
 
 scores = []
-fileName = "Space-side-scroller/highscore.txt"
 
 class Menu():
     def __init__(self, game):
+        
         self.game = game
         self.mid_w, self.mid_h = self.game.DISPLAY_W / 2, self.game.DISPLAY_H / 2
         self.run_display = True
         self.cursor_rect = pygame.Rect(0, 0, 20, 20)
         self.offset = -200
-
     def draw_cursor(self):
         self.game.draw_text('*', 15, self.cursor_rect.x, self.cursor_rect.y)
 
@@ -29,13 +30,17 @@ class MainMenu(Menu):
         self.creditsx, self.creditsy = self.mid_w, self.mid_h + 120
         self.quitx, self.quity = self.mid_w, self.mid_h + 160
         self.cursor_rect.midtop = (self.startx + self.offset, self.starty)
+        self.dt = 0
+        self.clock = pygame.time.Clock()
+        self.joystick_timer = 0
 
     def display_menu(self):
         self.run_display = True
         while self.run_display:
             self.game.check_events()
             self.check_input()
-            self.game.display.fill(self.game.BLACK)
+            #self.game.display.fill(self.game.BLACK)
+            self.game.display.blit(self.game.bg_img_menu, (0,0))
             self.game.draw_text('Main menu', 40, self.game.DISPLAY_W / 2, self.game.DISPLAY_H / 2 - 100)
             self.game.draw_text('Start game', 35, self.startx, self.starty)
             self.game.draw_text('Highscore', 35, self.highscorex, self.highscorey)
@@ -43,6 +48,7 @@ class MainMenu(Menu):
             self.game.draw_text('Quit', 35, self.quitx, self.quity)
             self.draw_cursor()
             self.blit_screen()
+            self.dt = self.clock.tick(60) / 1000
 
     def move_cursor(self):
         if self.game.DOWN_KEY:
@@ -97,7 +103,8 @@ class HighscoreMenu(Menu):
         while self.run_display:
             self.game.check_events()
             self.check_input()
-            self.game.display.fill((0, 0, 0))
+            #self.game.display.fill((0, 0, 0))
+            self.game.display.blit(self.game.bg_img_menu, (0,0))
             self.game.draw_text('Highscores', 40, self.game.DISPLAY_W / 2, self.game.DISPLAY_H / 2 - 100)
             self.game.draw_text(str(scores[0]), 35, self.highscorex, self.highscorey)
             self.game.draw_text(str(scores[1]), 35, self.highscorex, self.highscorey + 40)
@@ -143,7 +150,8 @@ class CreditsMenu(Menu):
             if self.game.START_KEY or self.game.BACK_KEY:
                 self.game.curr_menu = self.game.main_menu
                 self.run_display = False
-            self.game.display.fill(self.game.BLACK)
+            #self.game.display.fill(self.game.BLACK)
+            self.game.display.blit(self.game.bg_img_menu, (0,0))
             self.game.draw_text('Credits', 40, self.game.DISPLAY_W / 2, self.game.DISPLAY_H / 2 - 30)
             self.game.draw_text('Adam Johansson Kusnierz', 35, self.game.DISPLAY_W / 2, self.game.DISPLAY_H / 2 + 20)
             self.game.draw_text('Alexander Jxnsson', 35, self.game.DISPLAY_W / 2, self.game.DISPLAY_H / 2 + 60)
@@ -156,18 +164,21 @@ class QuitMenu(Menu):
         self.nox, self.noy = self.mid_w, self.mid_h + 20
         self.yesx, self.yesy = self.mid_w, self.mid_h + 60
         self.cursor_rect.midtop = (self.nox + self.offset, self.noy)
+        self.clock = pygame.time.Clock()
 
     def display_menu(self):
         self.run_display = True
         while self.run_display:
             self.game.check_events()
             self.check_input()
-            self.game.display.fill((0, 0, 0))
+            #self.game.display.fill((0, 0, 0))
+            self.game.display.blit(self.game.bg_img_menu, (0,0))
             self.game.draw_text('Are you sure', 40, self.game.DISPLAY_W / 2, self.game.DISPLAY_H / 2 - 30)
             self.game.draw_text('No', 35, self.nox, self.noy)
             self.game.draw_text('Yes', 35, self.yesx, self.yesy)
             self.draw_cursor()
             self.blit_screen()
+            self.dt = self.clock.tick(60) / 1000
 
     def check_input(self):
         if self.game.BACK_KEY:
@@ -197,11 +208,11 @@ screen = pygame.display.set_mode((SCREEN_WITDH, SCREEN_HEIGHT))
 pygame.display.set_caption('Main Menu')
 
 def menu():
-    background_img_menu = pygame.image.load('Space-side-scroller/Images/background_menu.jpg')
-    background_img_menu = pygame.transform.scale(background_img_menu, (900, 600))
+    bg_img_menu = pygame.image.load('Space-side-scroller/Images/bg_menu.jpg')
+    bg_img_menu = pygame.transform.scale(bg_img_menu, (900, 600))
 
     while True:
-        screen.blit(background_img_menu, (0,0))
+        screen.blit(bg_img_menu, (0,0))
         pygame.display.update()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:

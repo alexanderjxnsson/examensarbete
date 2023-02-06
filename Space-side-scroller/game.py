@@ -63,6 +63,7 @@ class Game():
         self.ship = pygame.transform.scale(self.ship, (127, 162))
         self.ship_x = 0
         self.ship_y = self.DISPLAY_H / 2 - 81
+        self.ship_speed = 10
         
 
     def game_loop(self):
@@ -100,32 +101,32 @@ class Game():
                     self.BACK_KEY = True
                 if event.key == pygame.K_DOWN:
                     self.DOWN_KEY = True
-                    self.ship_y += 5
+                    self.ship_y += self.ship_speed
                 if event.key == pygame.K_UP:
                     self.UP_KEY = True
-                    self.ship_y -= 5
+                    self.ship_y -= self.ship_speed
                 if event.key == pygame.K_LEFT:
                     self.LEFT_KEY = True
-                    self.ship_x -= 5
+                    self.ship_x -= self.ship_speed
                 if event.key == pygame.K_RIGHT:
                     self.RIGHT_KEY = True
-                    self.ship_x += 5
+                    self.ship_x += self.ship_speed
         if rpi:
             if (self.main_menu.joystick_timer >= 1) and (self.chanY.value / 55 < 235): # Y DOWN
                 self.DOWN_KEY = True
-                self.ship_y += 5
+                self.ship_y += self.ship_speed
                 self.main_menu.joystick_timer = 0
             elif (self.main_menu.joystick_timer >= 1) and (self.chanY.value / 55 > 245): # Y UP
                 self.UP_KEY = True
-                self.ship_y -= 5
+                self.ship_y -= self.ship_speed
                 self.main_menu.joystick_timer = 0 
             elif (self.main_menu.joystick_timer >= 1) and (self.chanX.value / 55 > 405): # X RIGHT
                 self.RIGHT_KEY = True
-                self.ship_x += 5
+                self.ship_x += self.ship_speed
                 self.main_menu.joystick_timer = 0
             elif (self.main_menu.joystick_timer >= 1) and (self.chanX.value / 55 < 395): # X LEFT
                 self.LEFT_KEY = True
-                self.ship_x -= 5
+                self.ship_x -= self.ship_speed
                 self.main_menu.joystick_timer = 0
             else:
                 self.main_menu.joystick_timer += self.main_menu.dt    

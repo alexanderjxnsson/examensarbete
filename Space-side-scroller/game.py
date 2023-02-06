@@ -61,10 +61,10 @@ class Game():
         self.clock = pygame.time.Clock()
         self.ship = pygame.image.load(player_ship)
         self.ship = pygame.transform.scale(self.ship, (127, 162))
-        self.ship_x = 0
-        self.ship_y = self.DISPLAY_H / 2 - 81
+        self.ship_x, self.ship_y = 0, self.DISPLAY_H / 2 - 81
+        self.max_left, self.max_right = 3, (self.DISPLAY_W - 130)
+        self.max_up, self.max_down = 9, 315
         self.ship_speed = 10
-        
 
     def game_loop(self):
         while self.playing:
@@ -101,16 +101,20 @@ class Game():
                     self.BACK_KEY = True
                 if event.key == pygame.K_DOWN:
                     self.DOWN_KEY = True
-                    self.ship_y += self.ship_speed
+                    if self.ship_y <= self.max_down:
+                        self.ship_y += self.ship_speed
                 if event.key == pygame.K_UP:
                     self.UP_KEY = True
-                    self.ship_y -= self.ship_speed
+                    if self.ship_y >= self.max_up:
+                        self.ship_y -= self.ship_speed
                 if event.key == pygame.K_LEFT:
                     self.LEFT_KEY = True
-                    self.ship_x -= self.ship_speed
+                    if self.ship_x >= self.max_left:
+                        self.ship_x -= self.ship_speed
                 if event.key == pygame.K_RIGHT:
                     self.RIGHT_KEY = True
-                    self.ship_x += self.ship_speed
+                    if self.ship_x <= self.max_right:
+                        self.ship_x += self.ship_speed
         if rpi:
             if (self.main_menu.joystick_timer >= 1) and (self.chanY.value / 55 < 235): # Y DOWN
                 self.DOWN_KEY = True

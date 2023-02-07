@@ -8,7 +8,7 @@ class Game():
     def __init__(self):
         pygame.init()
         pygame.mouse.set_visible(False)
-        self.running, self.playing = True, False
+        self.running, self.playing, self.paused = True, False, False
         self.UP_KEY, self.DOWN_KEY, self.START_KEY, self.BACK_KEY = False, False, False, False
         self.DISPLAY_W, self.DISPLAY_H = 800, 480
         self.display = pygame.Surface((self.DISPLAY_W, self.DISPLAY_H))
@@ -20,22 +20,10 @@ class Game():
         self.credits = CreditsMenu(self)
         self.quit = QuitMenu(self)
         self.curr_menu = self.main_menu
+
         if rpi:
             from gpiozero import Button, MCP3008
-            import board
-            import busio
-            import adafruit_ads1x15.ads1115 as ADS
-            from adafruit_ads1x15.analog_in import AnalogIn
 
-            # # Create the I2C bus
-            # i2c = busio.I2C(board.SCL, board.SDA)
-            # # Create the ADC object using the I2C bus
-            # ads = ADS.ADS1115(i2c)
-            # # Create single-ended input on channel 0
-            # self.chanX = AnalogIn(ads, ADS.P0)
-            # self.chanY = AnalogIn(ads, ADS.P1)
-
-            #MCP3008
             self.chanY = MCP3008(channel=0)
             self.chanX = MCP3008(channel=1)
 
@@ -43,29 +31,32 @@ class Game():
             self.back_btn = Button(3)
 
             self.window = pygame.display.set_mode(((self.DISPLAY_W, self.DISPLAY_H)), pygame.FULLSCREEN)
-            self.start_btn.when_pressed = self.start_pressed
-            self.back_btn.when_pressed = self.back_pressed
             self.start_btn_press = pygame.USEREVENT + 0
             self.back_btn_press = pygame.USEREVENT + 1
             self.start_event = pygame.event.Event(self.start_btn_press)
+            self.back_event = pygame.event.Event(self.back_btn_press)
+            self.start_btn.when_pressed = self.start_pressed
+            self.back_btn.when_pressed = self.back_pressed
+
             self.font_name = 'Font/8-BIT_WONDER.TTF'
             self.bg_img_menu = pygame.image.load('Images/bg_menu.jpg')
-            self.bg_img_game = pygame.image.load('Images/bg_game.jpg')
-            self.testing = pygame.image.load('Images/testing.png')
+            #self.bg_img_game = pygame.image.load('Images/bg_game.jpg')
+            self.bg_game_scroll = pygame.image.load('Images/bg_game_scroll.png')
         else:
             self.bg_img_menu = pygame.image.load('Space-side-scroller/Images/bg_menu.jpg')
-            self.bg_img_game = pygame.image.load('Space-side-scroller/Images/bg_game.jpg')
-            self.testing = pygame.image.load('Space-side-scroller/Images/testing.png')
+            #self.bg_img_game = pygame.image.load('Space-side-scroller/Images/bg_game.jpg')
+            self.bg_game_scroll = pygame.image.load('Space-side-scroller/Images/bg_game_scroll.png')
             self.window = pygame.display.set_mode(((self.DISPLAY_W, self.DISPLAY_H)))
             self.font_name = 'Space-side-scroller/Font/8-BIT_WONDER.TTF'
+
         self.bg_img_menu = pygame.transform.scale(self.bg_img_menu, (900, 600))
         self.bg_img_game = pygame.transform.scale(self.bg_img_game, (1200, 500))
-        self.testing_width = self.testing.get_width()
+        self.bg_game_scroll_width = self.bg_game_scroll.get_width()
         self.scroll = 0
         self.tiles = 3
+        self.clock = pygame.time.Clock()
         self.FPS = 60
         self.ship_x, self.ship_y = 0, self.DISPLAY_H / 2 - 40
-        self.clock = pygame.time.Clock()
         self.ship = pygame.image.load(player_ship)
         self.ship = pygame.transform.scale(self.ship, (64, 81))
         self.max_left, self.max_right = 3, (self.DISPLAY_W - 65)
@@ -79,29 +70,31 @@ class Game():
             self.clock.tick(self.FPS)
             self.check_events()
             if self.START_KEY:
-                self.PAUSE = True
+                self.playing = False
                 scores.append(7999)
+                
             #self.display.fill(self.BLACK)
             for i in range(0, self.tiles):
-                self.display.blit(self.testing, (i * self.testing_width + self.scroll, 0))
+                self.display.blit(self.bg_game_scroll, (i * self.bg_game_scroll_width + self.scroll, 0))
             self.scroll -= 5
-            if abs(self.scroll) > self.testing_width:
+            if abs(self.scroll) > self.bg_game_scroll_width:
                 self.scroll = 0
+
             self.display.blit(self.ship, (self.ship_x, self.ship_y))
             self.window.blit(self.display, (0,0))
-            if keys[pygame.K_DOWN]:
+            if keys[pygame.K_DOWN] or ((self.chanY.value * 480) < 220):
                     if self.ship_y <= self.max_down:
                         self.ship_y += self.ship_speed
-            if keys[pygame.K_UP]:
+            if keys[pygame.K_UP] or ((self.chanY.value * 480) > 260):
                 if self.ship_y >= self.max_up:
                     self.ship_y -= self.ship_speed
-            if keys[pygame.K_LEFT]:
+            if keys[pygame.K_LEFT] or ((self.chanX.value * 800) < 380):
                 if self.ship_x >= self.max_left:
                     self.ship_x -= self.ship_speed
-            if keys[pygame.K_RIGHT]:
+            if keys[pygame.K_RIGHT] or ((self.chanX.value * 800) > 420):
                 if self.ship_x <= self.max_right:
                     self.ship_x += self.ship_speed
-            while not self.playing:
+            while self.paused:
                 self.draw_text('PAUSED', 40, self.DISPLAY_W / 2, self.DISPLAY_H / 2 - 100)
                 self.check_events()
                 self.window.blit(self.display, (0,0))
@@ -111,10 +104,8 @@ class Game():
  
     def start_pressed(self):
         pygame.event.post(self.start_event)
-        #self.START_KEY = True
     def back_pressed(self):
-        pygame.event.post(self.back_btn_press)
-        #self.BACK_KEY = True
+        pygame.event.post(self.back_event)
         
     def check_events(self):
         for event in pygame.event.get():
@@ -123,45 +114,40 @@ class Game():
                 pygame.display.quit()
                 pygame.quit()
                 exit()
+            if event.type == self.start_btn_press:
+                    self.START_KEY = True
+            if event.type == self.back_btn_press:
+                    self.BACK_KEY = True
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RETURN:
                     self.START_KEY = True
-                    if self.playing == True:
-                        self.playing = False
-                    elif self.playing == False:
-                        self.playing = True
                 if event.key == pygame.K_BACKSPACE:
                     self.BACK_KEY = True
                 if event.key == pygame.K_DOWN:
                     self.DOWN_KEY = True
-                    if self.ship_y <= self.max_down:
-                        self.ship_y += self.ship_speed
                 if event.key == pygame.K_UP:
                     self.UP_KEY = True
                 if event.key == pygame.K_LEFT:
                     self.LEFT_KEY = True
                 if event.key == pygame.K_RIGHT:
                     self.RIGHT_KEY = True
+                if event.key == pygame.K_SPACE:
+                    if self.paused == True:
+                        self.paused = False
+                    else:
+                        self.paused = True
         if rpi:
-            if ((self.chanY.value * 480) < 220): # Y DOWN
+            if (self.main_menu.joystick_timer >= 1) and ((self.chanY.value * 480) < 220): # Y DOWN
                 self.DOWN_KEY = True
-                if self.ship_y <= self.max_down:
-                        self.ship_y += self.ship_speed
                 self.main_menu.joystick_timer = 0
-            elif ((self.chanY.value * 480) > 260): # Y UP
+            elif (self.main_menu.joystick_timer >= 1) and ((self.chanY.value * 480) > 260): # Y UP
                 self.UP_KEY = True
-                if self.ship_y >= self.max_up:
-                        self.ship_y -= self.ship_speed
                 self.main_menu.joystick_timer = 0 
-            elif ((self.chanX.value * 800) > 420): # X RIGHT
+            elif (self.main_menu.joystick_timer >= 1) and ((self.chanX.value * 800) > 420): # X RIGHT
                 self.RIGHT_KEY = True
-                if self.ship_x <= self.max_right:
-                        self.ship_x += self.ship_speed
                 self.main_menu.joystick_timer = 0
-            elif ((self.chanX.value * 800) < 380): # X LEFT
+            elif (self.main_menu.joystick_timer >= 1) and ((self.chanX.value * 800) < 380): # X LEFT
                 self.LEFT_KEY = True
-                if self.ship_x >= self.max_left:
-                        self.ship_x -= self.ship_speed
                 self.main_menu.joystick_timer = 0
             else:
                 self.main_menu.joystick_timer += self.main_menu.dt

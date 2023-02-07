@@ -1,4 +1,4 @@
-rpi = True
+rpi = False
 if rpi:
     fileName = "highscore.txt"
     player_ship = "Images/player.png"

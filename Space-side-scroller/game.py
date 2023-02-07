@@ -1,5 +1,6 @@
 import pygame
 from main_menu import *
+from player import Player
 import math
 
 
@@ -20,6 +21,7 @@ class Game():
         self.credits = CreditsMenu(self)
         self.quit = QuitMenu(self)
         self.curr_menu = self.main_menu
+        self.player = Player(self)
 
         if rpi:
             from gpiozero import Button, MCP3008
@@ -50,7 +52,7 @@ class Game():
             self.font_name = 'Space-side-scroller/Font/8-BIT_WONDER.TTF'
 
         self.bg_img_menu = pygame.transform.scale(self.bg_img_menu, (900, 600))
-        self.bg_img_game = pygame.transform.scale(self.bg_img_game, (1200, 500))
+        #self.bg_img_game = pygame.transform.scale(self.bg_img_game, (1200, 500))
         self.bg_game_scroll_width = self.bg_game_scroll.get_width()
         self.scroll = 0
         self.tiles = 3
@@ -80,20 +82,33 @@ class Game():
             if abs(self.scroll) > self.bg_game_scroll_width:
                 self.scroll = 0
 
-            self.display.blit(self.ship, (self.ship_x, self.ship_y))
+            self.display.blit(self.player.ship, (self.player.ship_x, self.player.ship_y))
             self.window.blit(self.display, (0,0))
-            if keys[pygame.K_DOWN] or ((self.chanY.value * 480) < 220):
-                    if self.ship_y <= self.max_down:
-                        self.ship_y += self.ship_speed
-            if keys[pygame.K_UP] or ((self.chanY.value * 480) > 260):
-                if self.ship_y >= self.max_up:
-                    self.ship_y -= self.ship_speed
-            if keys[pygame.K_LEFT] or ((self.chanX.value * 800) < 380):
-                if self.ship_x >= self.max_left:
-                    self.ship_x -= self.ship_speed
-            if keys[pygame.K_RIGHT] or ((self.chanX.value * 800) > 420):
-                if self.ship_x <= self.max_right:
-                    self.ship_x += self.ship_speed
+            if keys[pygame.K_DOWN]:
+                if self.player.ship_y <= self.player.max_down:
+                    self.player.ship_y += self.player.ship_speed
+            if keys[pygame.K_UP]:
+                if self.player.ship_y >= self.player.max_up:
+                    self.player.ship_y -= self.player.ship_speed
+            if keys[pygame.K_LEFT]:
+                if self.player.ship_x >= self.player.max_left:
+                    self.player.ship_x -= self.player.ship_speed
+            if keys[pygame.K_RIGHT]:
+                if self.player.ship_x <= self.player.max_right:
+                    self.player.ship_x += self.player.ship_speed
+            if rpi:
+                if ((self.chanY.value * 480) < 220):
+                    if self.player.ship_y <= self.player.max_down:
+                        self.player.ship_y += self.player.ship_speed
+                if ((self.chanY.value * 480) > 260):
+                    if self.player.ship_y >= self.player.max_up:
+                        self.player.ship_y -= self.player.ship_speed
+                if ((self.chanX.value * 800) < 380):
+                    if self.player.ship_x >= self.player.max_left:
+                        self.player.ship_x -= self.player.ship_speed
+                if ((self.chanX.value * 800) > 420):
+                    if self.player.ship_x <= self.player.max_right:
+                        self.player.ship_x += self.player.ship_speed
             while self.paused:
                 self.draw_text('PAUSED', 40, self.DISPLAY_W / 2, self.DISPLAY_H / 2 - 100)
                 self.check_events()
@@ -114,10 +129,11 @@ class Game():
                 pygame.display.quit()
                 pygame.quit()
                 exit()
-            if event.type == self.start_btn_press:
-                    self.START_KEY = True
-            if event.type == self.back_btn_press:
-                    self.BACK_KEY = True
+            if rpi:
+                if event.type == self.start_btn_press:
+                        self.START_KEY = True
+                if event.type == self.back_btn_press:
+                        self.BACK_KEY = True
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RETURN:
                     self.START_KEY = True

@@ -1,4 +1,4 @@
-from main_menu import *
+from menu import *
 from game import Game
 from global_var import *
 

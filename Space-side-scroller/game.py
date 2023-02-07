@@ -1,5 +1,5 @@
 import pygame
-from main_menu import *
+from menu import *
 from player import Player
 import math
 
@@ -21,7 +21,8 @@ class Game():
         self.credits = CreditsMenu(self)
         self.quit = QuitMenu(self)
         self.curr_menu = self.main_menu
-        self.player = Player(self)
+        self.player_sprite = Player(self)
+        self.player_grp = pygame.sprite.Group(self.player_sprite)
 
         if rpi:
             from gpiozero import Button, MCP3008
@@ -66,15 +67,16 @@ class Game():
         self.ship_speed = 10
 
     def game_loop(self):
-        self.ship_x, self.ship_y = 0, self.DISPLAY_H / 2 - 40
+        self.player_sprite.ship_x, self.player_sprite.ship_y = 0, self.DISPLAY_H / 2 - 40
         while self.playing:
-            keys = pygame.key.get_pressed()
-            self.clock.tick(self.FPS)
             self.check_events()
-            if self.START_KEY:
+            self.player_sprite.get_input()
+            #Exit game loop with back key
+            if self.BACK_KEY:
                 self.playing = False
                 scores.append(7999)
-                
+            
+            #Scrolling Background
             #self.display.fill(self.BLACK)
             for i in range(0, self.tiles):
                 self.display.blit(self.bg_game_scroll, (i * self.bg_game_scroll_width + self.scroll, 0))
@@ -82,40 +84,19 @@ class Game():
             if abs(self.scroll) > self.bg_game_scroll_width:
                 self.scroll = 0
 
-            self.display.blit(self.player.ship, (self.player.ship_x, self.player.ship_y))
-            self.window.blit(self.display, (0,0))
-            if keys[pygame.K_DOWN]:
-                if self.player.ship_y <= self.player.max_down:
-                    self.player.ship_y += self.player.ship_speed
-            if keys[pygame.K_UP]:
-                if self.player.ship_y >= self.player.max_up:
-                    self.player.ship_y -= self.player.ship_speed
-            if keys[pygame.K_LEFT]:
-                if self.player.ship_x >= self.player.max_left:
-                    self.player.ship_x -= self.player.ship_speed
-            if keys[pygame.K_RIGHT]:
-                if self.player.ship_x <= self.player.max_right:
-                    self.player.ship_x += self.player.ship_speed
-            if rpi:
-                if ((self.chanY.value * 480) < 220):
-                    if self.player.ship_y <= self.player.max_down:
-                        self.player.ship_y += self.player.ship_speed
-                if ((self.chanY.value * 480) > 260):
-                    if self.player.ship_y >= self.player.max_up:
-                        self.player.ship_y -= self.player.ship_speed
-                if ((self.chanX.value * 800) < 380):
-                    if self.player.ship_x >= self.player.max_left:
-                        self.player.ship_x -= self.player.ship_speed
-                if ((self.chanX.value * 800) > 420):
-                    if self.player.ship_x <= self.player.max_right:
-                        self.player.ship_x += self.player.ship_speed
+            #Loop to pause the game
             while self.paused:
                 self.draw_text('PAUSED', 40, self.DISPLAY_W / 2, self.DISPLAY_H / 2 - 100)
                 self.check_events()
                 self.window.blit(self.display, (0,0))
                 pygame.display.update()
+
+            #Updates
+            self.player_grp.update()
+            self.window.blit(self.display, (0,0))
             pygame.display.update()
             self.reset_keys()
+            self.clock.tick(self.FPS)
  
     def start_pressed(self):
         pygame.event.post(self.start_event)

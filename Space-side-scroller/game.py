@@ -21,27 +21,33 @@ class Game():
         self.quit = QuitMenu(self)
         self.curr_menu = self.main_menu
         if rpi:
-            import gpiozero
+            from gpiozero import Button, MCP3008
             import board
             import busio
             import adafruit_ads1x15.ads1115 as ADS
             from adafruit_ads1x15.analog_in import AnalogIn
-            # Create the I2C bus
-            i2c = busio.I2C(board.SCL, board.SDA)
 
-            # Create the ADC object using the I2C bus
-            ads = ADS.ADS1115(i2c)
+            # # Create the I2C bus
+            # i2c = busio.I2C(board.SCL, board.SDA)
+            # # Create the ADC object using the I2C bus
+            # ads = ADS.ADS1115(i2c)
+            # # Create single-ended input on channel 0
+            # self.chanX = AnalogIn(ads, ADS.P0)
+            # self.chanY = AnalogIn(ads, ADS.P1)
 
-            # Create single-ended input on channel 0
-            self.chanX = AnalogIn(ads, ADS.P0)
-            self.chanY = AnalogIn(ads, ADS.P1)
+            #MCP3008
+            self.chanY = MCP3008(channel=0)
+            self.chanX = MCP3008(channel=1)
 
-            self.start_btn = gpiozero.Button(18, pull_up=False, hold_time=0.05, hold_repeat=False)
-            self.back_btn = gpiozero.Button(17, pull_up=False, hold_time=0.05, hold_repeat=False)
+            self.start_btn = Button(2)
+            self.back_btn = Button(3)
 
             self.window = pygame.display.set_mode(((self.DISPLAY_W, self.DISPLAY_H)), pygame.FULLSCREEN)
-            self.start_btn.when_held = self.start_pressed
-            self.back_btn.when_held = self.back_pressed
+            self.start_btn.when_pressed = self.start_pressed
+            self.back_btn.when_pressed = self.back_pressed
+            self.start_btn_press = pygame.USEREVENT + 0
+            self.back_btn_press = pygame.USEREVENT + 1
+            self.start_event = pygame.event.Event(self.start_btn_press)
             self.font_name = 'Font/8-BIT_WONDER.TTF'
             self.bg_img_menu = pygame.image.load('Images/bg_menu.jpg')
             self.bg_img_game = pygame.image.load('Images/bg_game.jpg')
@@ -104,9 +110,11 @@ class Game():
             self.reset_keys()
  
     def start_pressed(self):
-        self.START_KEY = True
+        pygame.event.post(self.start_event)
+        #self.START_KEY = True
     def back_pressed(self):
-        self.BACK_KEY = True
+        pygame.event.post(self.back_btn_press)
+        #self.BACK_KEY = True
         
     def check_events(self):
         for event in pygame.event.get():
@@ -126,6 +134,8 @@ class Game():
                     self.BACK_KEY = True
                 if event.key == pygame.K_DOWN:
                     self.DOWN_KEY = True
+                    if self.ship_y <= self.max_down:
+                        self.ship_y += self.ship_speed
                 if event.key == pygame.K_UP:
                     self.UP_KEY = True
                 if event.key == pygame.K_LEFT:
@@ -133,25 +143,29 @@ class Game():
                 if event.key == pygame.K_RIGHT:
                     self.RIGHT_KEY = True
         if rpi:
-            if (self.main_menu.joystick_timer >= 1) and (self.chanY.value / 55 < 235): # Y DOWN
+            if ((self.chanY.value * 480) < 220): # Y DOWN
                 self.DOWN_KEY = True
-                self.ship_y += self.ship_speed
+                if self.ship_y <= self.max_down:
+                        self.ship_y += self.ship_speed
                 self.main_menu.joystick_timer = 0
-            elif (self.main_menu.joystick_timer >= 1) and (self.chanY.value / 55 > 245): # Y UP
+            elif ((self.chanY.value * 480) > 260): # Y UP
                 self.UP_KEY = True
-                self.ship_y -= self.ship_speed
+                if self.ship_y >= self.max_up:
+                        self.ship_y -= self.ship_speed
                 self.main_menu.joystick_timer = 0 
-            elif (self.main_menu.joystick_timer >= 1) and (self.chanX.value / 55 > 405): # X RIGHT
+            elif ((self.chanX.value * 800) > 420): # X RIGHT
                 self.RIGHT_KEY = True
-                self.ship_x += self.ship_speed
+                if self.ship_x <= self.max_right:
+                        self.ship_x += self.ship_speed
                 self.main_menu.joystick_timer = 0
-            elif (self.main_menu.joystick_timer >= 1) and (self.chanX.value / 55 < 395): # X LEFT
+            elif ((self.chanX.value * 800) < 380): # X LEFT
                 self.LEFT_KEY = True
-                self.ship_x -= self.ship_speed
+                if self.ship_x >= self.max_left:
+                        self.ship_x -= self.ship_speed
                 self.main_menu.joystick_timer = 0
             else:
-                self.main_menu.joystick_timer += self.main_menu.dt    
-    
+                self.main_menu.joystick_timer += self.main_menu.dt
+
     def reset_keys(self):
         self.UP_KEY, self.DOWN_KEY, self.START_KEY, self.BACK_KEY = False, False, False, False
 

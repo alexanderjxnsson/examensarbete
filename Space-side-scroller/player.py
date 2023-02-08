@@ -2,47 +2,57 @@ import pygame
 from global_var import *
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self, game):
+    def __init__(self, game, pos):
         pygame.sprite.Sprite.__init__(self)
         self.game = game
         if rpi:
             self.image = "Images/player.png"
         else:
             self.image = "Space-side-scroller/Images/player.png"
-        self.ship_x, self.ship_y = 0, self.game.DISPLAY_H / 2 - 40
-        self.ship = pygame.image.load(self.image)
+        self.ship = pygame.image.load(self.image).convert_alpha()
         self.ship = pygame.transform.scale(self.ship, (64, 81))
-        self.max_left, self.max_right = 3, (self.game.DISPLAY_W - 65)
-        self.max_up, self.max_down = 9, 390
+        self.rect = self.ship.get_rect(midleft=pos)
+        self.max_x_const = 800
+        self.max_y_const = 480
         self.ship_speed = 10
-        self.rect = self.ship.get_rect()
 
-    def get_input(self):
+        # self.ship_x, self.ship_y = 0, self.game.DISPLAY_H / 2 - 40
+        # self.max_left, self.max_right = 3, (self.game.DISPLAY_W - 65)
+        # self.max_up, self.max_down = 9, 390
+        
+        
+
+    def move_ship(self):
         keys = pygame.key.get_pressed()
         if keys[pygame.K_DOWN]:
-                if self.ship_y <= self.max_down:
-                    self.ship_y += self.ship_speed
+            self.rect.y += self.ship_speed
         if keys[pygame.K_UP]:
-            if self.ship_y >= self.max_up:
-                self.ship_y -= self.ship_speed
+            self.rect.y -= self.ship_speed
         if keys[pygame.K_LEFT]:
-            if self.ship_x >= self.max_left:
-                self.ship_x -= self.ship_speed
+            self.rect.x -= self.ship_speed
         if keys[pygame.K_RIGHT]:
-            if self.ship_x <= self.max_right:
-                self.ship_x += self.ship_speed
+            self.rect.x += self.ship_speed
         if rpi:
-            if ((self.chanY.value * 480) < 220):
-                if self.ship_y <= self.max_down:
-                    self.ship_y += self.ship_speed
-            if ((self.chanY.value * 480) > 260):
-                if self.ship_y >= self.max_up:
-                    self.ship_y -= self.ship_speed
-            if ((self.chanX.value * 800) < 380):
-                if self.ship_x >= self.max_left:
-                    self.ship_x -= self.ship_speed
-            if ((self.chanX.value * 800) > 420):
-                if self.ship_x <= self.max_right:
-                    self.ship_x += self.ship_speed
+            if ((self.game.chanY.value * 480) < 220):
+                self.rect.y += self.ship_speed
+            if ((self.game.chanY.value * 480) > 260):
+                self.rect.y -= self.ship_speed
+            if ((self.game.chanX.value * 800) < 380):
+                self.rect.x -= self.ship_speed
+            if ((self.game.chanX.value * 800) > 420):
+                self.rect.x += self.ship_speed
+    
+    def constraint(self):
+        if self.rect.left <= 0:
+            self.rect.left = 0
+        if self.rect.top <= 0:
+            self.rect.top = 0
+        if self.rect.right >= self.max_x_const:
+            self.rect.right = self.max_x_const
+        if self.rect.bottom >= self.max_y_const:
+            self.rect.bottom = self.max_y_const
+
     def update(self):
-        self.game.display.blit(self.ship, (self.ship_x, self.ship_y))
+        self.move_ship()
+        self.constraint()
+        self.game.display.blit(self.ship, (self.rect.x, self.rect.y))

@@ -14,16 +14,6 @@ class Game():
         self.DISPLAY_W, self.DISPLAY_H = 800, 480
         self.display = pygame.Surface((self.DISPLAY_W, self.DISPLAY_H))
         
-        pygame.display.set_caption("Space Sider Scroller")
-        self.BLACK, self.WHITE = (0, 0, 0), (255, 255, 255)
-        self.main_menu = MainMenu(self)
-        self.highscore = HighscoreMenu(self)
-        self.credits = CreditsMenu(self)
-        self.quit = QuitMenu(self)
-        self.curr_menu = self.main_menu
-        self.player_sprite = Player(self)
-        self.player_grp = pygame.sprite.Group(self.player_sprite)
-
         if rpi:
             from gpiozero import Button, MCP3008
 
@@ -42,18 +32,21 @@ class Game():
             self.back_btn.when_pressed = self.back_pressed
 
             self.font_name = 'Font/8-BIT_WONDER.TTF'
-            self.bg_img_menu = pygame.image.load('Images/bg_menu.jpg')
-            #self.bg_img_game = pygame.image.load('Images/bg_game.jpg')
-            self.bg_game_scroll = pygame.image.load('Images/bg_game_scroll.png')
+            self.bg_game_scroll = pygame.image.load('Images/bg_game_scroll.png').convert()
         else:
-            self.bg_img_menu = pygame.image.load('Space-side-scroller/Images/bg_menu.jpg')
-            #self.bg_img_game = pygame.image.load('Space-side-scroller/Images/bg_game.jpg')
-            self.bg_game_scroll = pygame.image.load('Space-side-scroller/Images/bg_game_scroll.png')
             self.window = pygame.display.set_mode(((self.DISPLAY_W, self.DISPLAY_H)))
+            self.bg_game_scroll = pygame.image.load('Space-side-scroller/Images/bg_game_scroll.png').convert()
             self.font_name = 'Space-side-scroller/Font/8-BIT_WONDER.TTF'
-
-        self.bg_img_menu = pygame.transform.scale(self.bg_img_menu, (900, 600))
-        #self.bg_img_game = pygame.transform.scale(self.bg_img_game, (1200, 500))
+    
+        pygame.display.set_caption("Space Sider Scroller")
+        self.BLACK, self.WHITE = (0, 0, 0), (255, 255, 255)
+        self.main_menu = MainMenu(self)
+        self.highscore = HighscoreMenu(self)
+        self.credits = CreditsMenu(self)
+        self.quit = QuitMenu(self)
+        self.curr_menu = self.main_menu
+        self.player_sprite = Player(self, (0, self.DISPLAY_H / 2))
+        self.player = pygame.sprite.GroupSingle(self.player_sprite)
         self.bg_game_scroll_width = self.bg_game_scroll.get_width()
         self.scroll = 0
         self.tiles = 3
@@ -67,10 +60,9 @@ class Game():
         self.ship_speed = 10
 
     def game_loop(self):
-        self.player_sprite.ship_x, self.player_sprite.ship_y = 0, self.DISPLAY_H / 2 - 40
         while self.playing:
             self.check_events()
-            self.player_sprite.get_input()
+            
             #Exit game loop with back key
             if self.BACK_KEY:
                 self.playing = False
@@ -92,7 +84,8 @@ class Game():
                 pygame.display.update()
 
             #Updates
-            self.player_grp.update()
+            self.player_sprite.update()
+            #self.player.draw(self.display)
             self.window.blit(self.display, (0,0))
             pygame.display.update()
             self.reset_keys()
@@ -134,16 +127,16 @@ class Game():
                     else:
                         self.paused = True
         if rpi:
-            if (self.main_menu.joystick_timer >= 1) and ((self.chanY.value * 480) < 220): # Y DOWN
+            if (self.main_menu.joystick_timer >= 0.5) and ((self.chanY.value * 480) < 220): # Y DOWN
                 self.DOWN_KEY = True
                 self.main_menu.joystick_timer = 0
-            elif (self.main_menu.joystick_timer >= 1) and ((self.chanY.value * 480) > 260): # Y UP
+            elif (self.main_menu.joystick_timer >= 0.5) and ((self.chanY.value * 480) > 260): # Y UP
                 self.UP_KEY = True
                 self.main_menu.joystick_timer = 0 
-            elif (self.main_menu.joystick_timer >= 1) and ((self.chanX.value * 800) > 420): # X RIGHT
+            elif (self.main_menu.joystick_timer >= 0.5) and ((self.chanX.value * 800) > 420): # X RIGHT
                 self.RIGHT_KEY = True
                 self.main_menu.joystick_timer = 0
-            elif (self.main_menu.joystick_timer >= 1) and ((self.chanX.value * 800) < 380): # X LEFT
+            elif (self.main_menu.joystick_timer >= 0.5) and ((self.chanX.value * 800) < 380): # X LEFT
                 self.LEFT_KEY = True
                 self.main_menu.joystick_timer = 0
             else:

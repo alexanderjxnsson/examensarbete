@@ -63,7 +63,6 @@ class Game():
                 scores.append(7999)
             
             #Scrolling Background
-            #self.display.fill(self.BLACK)
             for i in range(0, self.tiles):
                 self.display.blit(self.bg_game_scroll, (i * self.bg_game_scroll_width + self.scroll, 0))
             self.scroll -= 5

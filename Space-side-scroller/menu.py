@@ -1,7 +1,6 @@
 import pygame
 import os
 from global_var import *
-#rpi = False
 
 scores = []
 
@@ -44,7 +43,6 @@ class MainMenu(Menu):
         while self.run_display:
             self.game.check_events()
             self.check_input()
-            #self.game.display.fill(self.game.BLACK)
             self.game.display.blit(self.bg_img_menu, (0,0))
             self.game.draw_text('Space Side Scroller', 40, self.game.DISPLAY_W / 2, self.game.DISPLAY_H / 2 - 80)
             self.game.draw_text('Start game', 35, self.startx, self.starty)
@@ -108,7 +106,6 @@ class HighscoreMenu(Menu):
         while self.run_display:
             self.game.check_events()
             self.check_input()
-            #self.game.display.fill((0, 0, 0))
             self.game.display.blit(self.bg_img_menu, (0,0))
             self.game.draw_text('Highscores', 40, self.game.DISPLAY_W / 2, self.game.DISPLAY_H / 2 - 100)
             self.game.draw_text(str(scores[0]), 35, self.highscorex, self.highscorey)
@@ -176,7 +173,6 @@ class QuitMenu(Menu):
         while self.run_display:
             self.game.check_events()
             self.check_input()
-            #self.game.display.fill((0, 0, 0))
             self.game.display.blit(self.bg_img_menu, (0,0))
             self.game.draw_text('Are you sure', 40, self.game.DISPLAY_W / 2, self.game.DISPLAY_H / 2 - 30)
             self.game.draw_text('No', 35, self.nox, self.noy)

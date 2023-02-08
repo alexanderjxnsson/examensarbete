@@ -16,12 +16,6 @@ class Player(pygame.sprite.Sprite):
         self.max_y_const = 480
         self.ship_speed = 10
 
-        # self.ship_x, self.ship_y = 0, self.game.DISPLAY_H / 2 - 40
-        # self.max_left, self.max_right = 3, (self.game.DISPLAY_W - 65)
-        # self.max_up, self.max_down = 9, 390
-        
-        
-
     def move_ship(self):
         keys = pygame.key.get_pressed()
         if keys[pygame.K_DOWN]:

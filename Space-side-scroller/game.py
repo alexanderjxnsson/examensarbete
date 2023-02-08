@@ -52,12 +52,6 @@ class Game():
         self.tiles = 3
         self.clock = pygame.time.Clock()
         self.FPS = 60
-        self.ship_x, self.ship_y = 0, self.DISPLAY_H / 2 - 40
-        self.ship = pygame.image.load(player_ship)
-        self.ship = pygame.transform.scale(self.ship, (64, 81))
-        self.max_left, self.max_right = 3, (self.DISPLAY_W - 65)
-        self.max_up, self.max_down = 9, 390
-        self.ship_speed = 10
 
     def game_loop(self):
         while self.playing:

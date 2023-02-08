@@ -47,14 +47,16 @@ class Game():
         self.curr_menu = self.main_menu
         self.player_sprite = Player(self, (0, self.DISPLAY_H / 2))
         self.player = pygame.sprite.GroupSingle(self.player_sprite)
+        self.bullet_group = pygame.sprite.Group()
         self.bg_game_scroll_width = self.bg_game_scroll.get_width()
         self.scroll = 0
-        self.tiles = 3
+        self.tiles = 4
         self.clock = pygame.time.Clock()
-        self.FPS = 60
+        self.FPS = 80
 
     def game_loop(self):
         while self.playing:
+            #Check the event handler for events
             self.check_events()
             
             #Exit game loop with back key
@@ -65,7 +67,7 @@ class Game():
             #Scrolling Background
             for i in range(0, self.tiles):
                 self.display.blit(self.bg_game_scroll, (i * self.bg_game_scroll_width + self.scroll, 0))
-            self.scroll -= 5
+            self.scroll -= 3
             if abs(self.scroll) > self.bg_game_scroll_width:
                 self.scroll = 0
 
@@ -77,8 +79,10 @@ class Game():
                 pygame.display.update()
 
             #Updates
-            self.player_sprite.update()
-            #self.player.draw(self.display)
+            self.bullet_group.update()
+            self.bullet_group.draw(self.display)
+            self.player.update()
+            self.player.draw(self.display)
             self.window.blit(self.display, (0,0))
             pygame.display.update()
             self.reset_keys()

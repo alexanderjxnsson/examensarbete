@@ -1,4 +1,4 @@
-rpi = False
+rpi = True
 if rpi:
     fileName = "highscore.txt"
 else:

@@ -13,9 +13,9 @@ class Menu():
         self.cursor_rect = pygame.Rect(0, 0, 20, 20)
         self.offset = -200
         if rpi:
-            self.bg_img_menu = pygame.image.load('Images/bg_menu.jpg')
+            self.bg_img_menu = pygame.image.load('Images/bg_menu.jpg').convert()
         else:
-            self.bg_img_menu = pygame.image.load('Space-side-scroller/Images/bg_menu.jpg')
+            self.bg_img_menu = pygame.image.load('Space-side-scroller/Images/bg_menu.jpg').convert()
         self.bg_img_menu = pygame.transform.scale(self.bg_img_menu, (900, 600))
     def draw_cursor(self):
         self.game.draw_text('*', 15, self.cursor_rect.x, self.cursor_rect.y)

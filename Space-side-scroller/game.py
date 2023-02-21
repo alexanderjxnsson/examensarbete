@@ -53,8 +53,9 @@ class Game():
         self.tiles = 4
         self.clock = pygame.time.Clock()
         self.FPS = 80
-
+        
     def game_loop(self):
+        self.score = 0
         while self.playing:
             #Check the event handler for events
             self.check_events()
@@ -62,7 +63,7 @@ class Game():
             #Exit game loop with back key
             if self.BACK_KEY:
                 self.playing = False
-                scores.append(7999)
+                scores.append(self.score)
             
             #Scrolling Background
             for i in range(0, self.tiles):
@@ -71,22 +72,24 @@ class Game():
             if abs(self.scroll) > self.bg_game_scroll_width:
                 self.scroll = 0
 
+            #Updates
+            self.bullet_group.update()
+            self.bullet_group.draw(self.display)
+            self.player.update()
+            self.player.draw(self.display)
+            self.display_score()
+
+            self.window.blit(self.display, (0,0))
+            pygame.display.update()
+            self.reset_keys()
+            self.clock.tick(self.FPS)
+
             #Loop to pause the game
             while self.paused:
                 self.draw_text('PAUSED', 40, self.DISPLAY_W / 2, self.DISPLAY_H / 2 - 100)
                 self.check_events()
                 self.window.blit(self.display, (0,0))
                 pygame.display.update()
-
-            #Updates
-            self.bullet_group.update()
-            self.bullet_group.draw(self.display)
-            self.player.update()
-            self.player.draw(self.display)
-            self.window.blit(self.display, (0,0))
-            pygame.display.update()
-            self.reset_keys()
-            self.clock.tick(self.FPS)
  
     def start_pressed(self):
         pygame.event.post(self.start_event)
@@ -109,7 +112,10 @@ class Game():
                 if event.key == pygame.K_RETURN:
                     self.START_KEY = True
                 if event.key == pygame.K_BACKSPACE:
-                    self.BACK_KEY = True
+                    if self.paused:
+                        self.BACK_KEY = False
+                    else:
+                        self.BACK_KEY = True
                 if event.key == pygame.K_DOWN:
                     self.DOWN_KEY = True
                 if event.key == pygame.K_UP:
@@ -148,3 +154,11 @@ class Game():
         text_rect = text_surface.get_rect()
         text_rect.center = (x, y)
         self.display.blit(text_surface, text_rect)
+
+    def display_score(self):
+        if self.score >= 10000 and self.score < 100000:
+            self.draw_text(str(self.score), 40, 700, 15)
+        elif self.score >= 100000:
+            self.draw_text(str(self.score), 40, 680, 15)
+        else:
+            self.draw_text(str(self.score), 40, 720, 15)

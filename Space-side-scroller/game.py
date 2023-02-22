@@ -1,6 +1,7 @@
 import pygame
 from menu import *
 from player import Player
+import pygame.freetype
 import math
 
 
@@ -56,6 +57,7 @@ class Game():
         
     def game_loop(self):
         self.score = 0
+        self.health = 3
         while self.playing:
             #Check the event handler for events
             self.check_events()
@@ -77,7 +79,7 @@ class Game():
             self.bullet_group.draw(self.display)
             self.player.update()
             self.player.draw(self.display)
-            self.display_score()
+            self.stats()
 
             self.window.blit(self.display, (0,0))
             pygame.display.update()
@@ -155,10 +157,8 @@ class Game():
         text_rect.center = (x, y)
         self.display.blit(text_surface, text_rect)
 
-    def display_score(self):
-        if self.score >= 10000 and self.score < 100000:
-            self.draw_text(str(self.score), 40, 700, 15)
-        elif self.score >= 100000:
-            self.draw_text(str(self.score), 40, 680, 15)
-        else:
-            self.draw_text(str(self.score), 40, 720, 15)
+    def stats(self):
+        pygame.freetype.init()
+        font = pygame.freetype.Font(self.font_name, 30)
+        font.render_to(self.display, (4, 4), "Score " + str(self.score), (254, 254, 254), size=30)
+        font.render_to(self.display, (4, 33), "Heatlh " + str(self.health), (254, 254, 254), size=30)

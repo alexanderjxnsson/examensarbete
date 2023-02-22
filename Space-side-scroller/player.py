@@ -31,6 +31,7 @@ class Player(pygame.sprite.Sprite):
             self.rect.x += self.ship_speed
         if keys[pygame.K_RETURN] and self.ready:
             self.ready = False
+            self.game.score += 100
             self.bullet_time = pygame.time.get_ticks()
             self.game.bullet_group.add(self.create_bullet())
         if rpi:

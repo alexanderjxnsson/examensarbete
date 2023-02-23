@@ -154,7 +154,8 @@ class Game():
         font = pygame.font.Font(self.font_name, size)
         text_surface = font.render(text, True, self.WHITE)
         text_rect = text_surface.get_rect()
-        text_rect.center = (x, y)
+        text_rect.centerx = x
+        text_rect.centery = y
         self.display.blit(text_surface, text_rect)
 
     def stats(self):

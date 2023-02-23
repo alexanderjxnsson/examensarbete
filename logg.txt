@@ -44,5 +44,6 @@ Tisdag 14/2:
 	- Buildroot har alla packet vi behöver i sig redan
 	- Med denna linux versionen har vi lyckats starta ett tomt pygame program
 	- När vi försöker köra vår spel så får vi en error från pygame som inte är ett fel,
-	  det är korrekt skrivet men vi får ändå en error. Vi tror det är pga. att pygame i buildroot
-	  är en mycket äldre version än den vi använder på våra utvecklingsdatorer
+	  det är korrekt skrivet men vi får ändå en error. 
+	- Vi tror det är pga. att pygame i buildroot är en mycket äldre version än 
+	  den vi använder på våra utvecklingsdatorer

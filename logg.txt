@@ -19,3 +19,30 @@ Tisdag 24/1:
 	- Lyckades koppla in knappar och styra Space invaders.
 	- Köpte ADC till joysticken.
 	- Börjat med spelet i python
+
+Torsdag 26/1:
+	- Lade till funktioner för highscore
+	- Highscore läses in från en textfil och sparas i samma textfil
+
+Onsdag 1/2:
+	- Fixade gpio styrning för knappar och joysticken
+
+Fredag 3/2:
+	- Lade till en rullande bakgrund
+
+Måndag 6/2:
+	- Lade till skeppet i vårat spel och styrning till det
+
+Tisdag 7/2:
+	- Flyttade ut all kod som tillhör spelaren till en egen klass
+
+Onsdag 8/2:
+	- Lade till kod så att spelaren kan skjuta ett laserskott
+
+Tisdag 14/2:
+	- Testat bygga en egen linux distro med hjälp att buildroot istället
+	- Buildroot har alla packet vi behöver i sig redan
+	- Med denna linux versionen har vi lyckats starta ett tomt pygame program
+	- När vi försöker köra vår spel så får vi en error från pygame som inte är ett fel,
+	  det är korrekt skrivet men vi får ändå en error. Vi tror det är pga. att pygame i buildroot
+	  är en mycket äldre version än den vi använder på våra utvecklingsdatorer

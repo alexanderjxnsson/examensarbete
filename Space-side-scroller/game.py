@@ -46,12 +46,12 @@ class Game():
         self.credits = CreditsMenu(self)
         self.quit = QuitMenu(self)
         self.curr_menu = self.main_menu
-        self.player_sprite = Player(self, (0, self.DISPLAY_H / 2))
+        self.player_sprite = Player(self, (0, self.DISPLAY_H / 2), self.DISPLAY_W, self.DISPLAY_H)
         self.player = pygame.sprite.GroupSingle(self.player_sprite)
         self.bullet_group = pygame.sprite.Group()
         self.bg_game_scroll_width = self.bg_game_scroll.get_width()
         self.scroll = 0
-        self.tiles = 4
+        self.tiles = 3
         self.clock = pygame.time.Clock()
         self.FPS = 80
         

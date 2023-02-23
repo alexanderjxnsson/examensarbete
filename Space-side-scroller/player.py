@@ -2,7 +2,7 @@ import pygame
 from global_var import *
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self, game, pos):
+    def __init__(self, game, pos, x_const, y_const):
         pygame.sprite.Sprite.__init__(self)
         self.game = game
         if rpi:
@@ -11,8 +11,8 @@ class Player(pygame.sprite.Sprite):
             self.image = pygame.image.load("Space-side-scroller/Images/player.png").convert_alpha()
         self.image = pygame.transform.scale(self.image, (64, 81))
         self.rect = self.image.get_rect(center=pos)
-        self.max_x_const = 800
-        self.max_y_const = 480
+        self.max_x_const = x_const
+        self.max_y_const = y_const
         self.ship_speed = 5
         self.bullet_time = 0
         self.bullet_cooldown = 400

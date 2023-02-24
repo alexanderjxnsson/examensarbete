@@ -1,7 +1,9 @@
 import pygame
 from menu import *
 from player import Player
+from asteroid import Asteroid
 import pygame.freetype
+import random
 import math
 
 
@@ -84,6 +86,8 @@ class Game():
             self.bullet_group.draw(self.display)
             self.player.update()
             self.player.draw(self.display)
+            self.obstacle.update()
+            self.obstacle.draw(self.display)
             self.stats()
 
             self.window.blit(self.display, (0,0))

@@ -17,7 +17,7 @@ class Player(pygame.sprite.Sprite):
         self.bullet_time = 0
         self.bullet_cooldown = 400
         self.ready = True
-
+        
     #Function to move the ship
     def move_ship(self):
         keys = pygame.key.get_pressed()
@@ -87,3 +87,4 @@ class Bullet(pygame.sprite.Sprite):
         self.rect.x += 10
         if self.rect.x >= 820:
             self.kill()
+        

@@ -127,10 +127,11 @@ class Game():
                 if event.key == pygame.K_RIGHT:
                     self.RIGHT_KEY = True
                 if event.key == pygame.K_SPACE:
-                    if self.paused == True:
-                        self.paused = False
-                    else:
-                        self.paused = True
+                    if not self.main_menu.run_display:
+                        if self.paused == True:
+                            self.paused = False
+                        else:
+                            self.paused = True
         if rpi:
             if (self.main_menu.joystick_timer >= 0.5) and ((self.chanY.value * 480) < 220): # Y DOWN
                 self.DOWN_KEY = True

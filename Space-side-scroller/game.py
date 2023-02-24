@@ -21,16 +21,20 @@ class Game():
             self.chanY = MCP3008(channel=0)
             self.chanX = MCP3008(channel=1)
 
-            self.start_btn = Button(2)
-            self.back_btn = Button(3)
+            self.start_btn = Button(23)
+            self.back_btn = Button(24)
+            self.pause_btn = Button(17)
 
             self.window = pygame.display.set_mode(((self.DISPLAY_W, self.DISPLAY_H)), pygame.FULLSCREEN)
             self.start_btn_press = pygame.USEREVENT + 0
             self.back_btn_press = pygame.USEREVENT + 1
+            self.pause_btn_press = pygame.USEREVENT + 2
             self.start_event = pygame.event.Event(self.start_btn_press)
             self.back_event = pygame.event.Event(self.back_btn_press)
+            self.pause_event = pygame.event.Event(self.pause_btn_press)
             self.start_btn.when_pressed = self.start_pressed
             self.back_btn.when_pressed = self.back_pressed
+            self.pause_btn.when_pressed = self.pause_pressed
 
             self.font_name = 'Font/8-BIT_WONDER.TTF'
             self.bg_game_scroll = pygame.image.load('Images/bg_game_scroll.png').convert()
@@ -46,9 +50,6 @@ class Game():
         self.credits = CreditsMenu(self)
         self.quit = QuitMenu(self)
         self.curr_menu = self.main_menu
-        self.player_sprite = Player(self, (0, self.DISPLAY_H / 2), self.DISPLAY_W, self.DISPLAY_H)
-        self.player = pygame.sprite.GroupSingle(self.player_sprite)
-        self.bullet_group = pygame.sprite.Group()
         self.bg_game_scroll_width = self.bg_game_scroll.get_width()
         self.scroll = 0
         self.tiles = 3
@@ -58,6 +59,10 @@ class Game():
     def game_loop(self):
         self.score = 0
         self.health = 3
+        self.player_sprite = Player(self, (0, self.DISPLAY_H / 2), self.DISPLAY_W, self.DISPLAY_H)
+        self.player = pygame.sprite.GroupSingle(self.player_sprite)
+        self.bullet_group = pygame.sprite.Group()
+
         while self.playing:
             #Check the event handler for events
             self.check_events()
@@ -97,6 +102,8 @@ class Game():
         pygame.event.post(self.start_event)
     def back_pressed(self):
         pygame.event.post(self.back_event)
+    def pause_pressed(self):
+        pygame.event.post(self.pause_event)
         
     def check_events(self):
         for event in pygame.event.get():
@@ -110,6 +117,12 @@ class Game():
                         self.START_KEY = True
                 if event.type == self.back_btn_press:
                         self.BACK_KEY = True
+                if event.type == self.pause_btn_press:
+                    if not self.main_menu.run_display:
+                        if self.paused == True:
+                            self.paused = False
+                        else:
+                            self.paused = True
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RETURN:
                     self.START_KEY = True
@@ -151,16 +164,34 @@ class Game():
     def reset_keys(self):
         self.UP_KEY, self.DOWN_KEY, self.START_KEY, self.BACK_KEY = False, False, False, False
 
+    
+    ### Function to draw text on the screen
+    ### Take 4 Arguments, "String" or integer, Size of the text, x coordinate, y coordinate
     def draw_text(self, text, size, x, y):
         font = pygame.font.Font(self.font_name, size)
-        text_surface = font.render(text, True, self.WHITE)
+        text_surface = font.render(str(text), True, self.WHITE)
         text_rect = text_surface.get_rect()
         text_rect.centerx = x
         text_rect.centery = y
         self.display.blit(text_surface, text_rect)
+    
+    ### Function to draw score on the screen
+    ### Take 4 Arguments, "String" or integer, Size of the text, x coordinate, y coordinate
+    def draw_score(self, text, size, x, y):
+        font = pygame.font.Font(self.font_name, size)
+        text_surface = font.render(str(text), True, self.WHITE)
+        text_rect = text_surface.get_rect()
+        text_rect.x = x
+        text_rect.y = y
+        self.display.blit(text_surface, text_rect)
 
     def stats(self):
-        pygame.freetype.init()
-        font = pygame.freetype.Font(self.font_name, 30)
-        font.render_to(self.display, (4, 4), "Score " + str(self.score), (254, 254, 254), size=30)
-        font.render_to(self.display, (4, 33), "Heatlh " + str(self.health), (254, 254, 254), size=30)
+        self.scorex, self.scorey = 4, 4
+        self.hpx, self.hpy = 4, 35
+        self.draw_score("Score " + str(self.score), 30, self.scorex, self.scorey)
+        self.draw_score("Health " + str(self.health), 30, self.hpx, self.hpy)
+
+        # pygame.freetype.init()
+        # font = pygame.freetype.Font(self.font_name, 30)
+        # font.render_to(self.display, (4, 4), "Score " + str(self.score), (254, 254, 254), size=30)
+        # font.render_to(self.display, (4, 33), "Heatlh " + str(self.health), (254, 254, 254), size=30)

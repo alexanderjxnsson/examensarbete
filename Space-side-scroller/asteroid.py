@@ -1,6 +1,6 @@
 import pygame
 from global_var import *
-
+from player import Player
 
 class Asteroid(pygame.sprite.Sprite):
     def __init__(self, game, pos, x_const, y_const):
@@ -24,7 +24,7 @@ class Asteroid(pygame.sprite.Sprite):
     def constraint(self):
         if self.rect.left <= -150:
             self.kill()
-
+        
     def update(self):
         self.move_ship()
         self.constraint()

@@ -1,12 +1,10 @@
 import pygame
 from menu import *
-from player import Player
+from player import *
 from asteroid import Asteroid
 import pygame.freetype
 import random
 import math
-
-
 
 class Game():
     def __init__(self):
@@ -48,12 +46,6 @@ class Game():
         self.credits = CreditsMenu(self)
         self.quit = QuitMenu(self)
         self.curr_menu = self.main_menu
-        self.player_sprite = Player(self, (0, self.DISPLAY_H / 2), self.DISPLAY_W, self.DISPLAY_H)
-        self.player = pygame.sprite.GroupSingle(self.player_sprite)
-        pos = random.randrange(480)
-        self.obstacle = Asteroid(self, (850, pos), self.DISPLAY_W, self.DISPLAY_H)
-        self.obstacle = pygame.sprite.Group(self.obstacle)
-        self.bullet_group = pygame.sprite.Group()
         self.bg_game_scroll_width = self.bg_game_scroll.get_width()
         self.scroll = 0
         self.tiles = 3
@@ -63,6 +55,12 @@ class Game():
     def game_loop(self):
         self.score = 0
         self.health = 3
+        self.player_sprite = Player(self, (0, self.DISPLAY_H / 2), self.DISPLAY_W, self.DISPLAY_H)
+        self.player = pygame.sprite.GroupSingle(self.player_sprite)
+        pos = random.randrange(480)
+        self.asteroid = Asteroid(self, (850, pos), self.DISPLAY_W, self.DISPLAY_H)
+        self.obstacle = pygame.sprite.Group(self.asteroid)
+        self.bullet_group = pygame.sprite.Group()
         while self.playing:
             #Check the event handler for events
             self.check_events()
@@ -87,7 +85,12 @@ class Game():
             self.obstacle.update()
             self.obstacle.draw(self.display)
             self.stats()
-
+            body_hit = pygame.sprite.spritecollide(self.player_sprite, self.obstacle, True)
+            if body_hit:
+                self.health -= 1
+            bullet_hit = pygame.sprite.groupcollide(self.obstacle, self.bullet_group, True, True)
+            if bullet_hit:
+                self.score += 100
             self.window.blit(self.display, (0,0))
             pygame.display.update()
             self.reset_keys()

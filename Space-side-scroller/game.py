@@ -1,7 +1,9 @@
 import pygame
 from menu import *
 from player import Player
+from asteroid import Asteroid
 import pygame.freetype
+import random
 import math
 
 
@@ -48,6 +50,9 @@ class Game():
         self.curr_menu = self.main_menu
         self.player_sprite = Player(self, (0, self.DISPLAY_H / 2), self.DISPLAY_W, self.DISPLAY_H)
         self.player = pygame.sprite.GroupSingle(self.player_sprite)
+        pos = random.randrange(480)
+        self.obstacle = Asteroid(self, (850, pos), self.DISPLAY_W, self.DISPLAY_H)
+        self.obstacle = pygame.sprite.Group(self.obstacle)
         self.bullet_group = pygame.sprite.Group()
         self.bg_game_scroll_width = self.bg_game_scroll.get_width()
         self.scroll = 0
@@ -79,6 +84,8 @@ class Game():
             self.bullet_group.draw(self.display)
             self.player.update()
             self.player.draw(self.display)
+            self.obstacle.update()
+            self.obstacle.draw(self.display)
             self.stats()
 
             self.window.blit(self.display, (0,0))

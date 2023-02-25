@@ -59,7 +59,6 @@ class Game():
     def game_loop(self):
         self.score = 0
         self.health = 3
-        spawn = True
         self.player_sprite = Player(self, (0, self.DISPLAY_H / 2), self.DISPLAY_W, self.DISPLAY_H)
         self.player = pygame.sprite.GroupSingle(self.player_sprite)
         self.bullet_group = pygame.sprite.Group()

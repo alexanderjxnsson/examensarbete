@@ -10,7 +10,7 @@ class Asteroid(pygame.sprite.Sprite):
             self.image = pygame.image.load("Images/as2.png").convert_alpha()
         else:
             self.image = pygame.image.load("Space-side-scroller/Images/as2.png").convert_alpha()
-        self.image = pygame.transform.scale(self.image, (64, 81))
+        self.image = pygame.transform.scale(self.image, (82, 80))
         self.rect = self.image.get_rect(center=pos)
         self.max_x_const = x_const
         self.max_y_const = y_const

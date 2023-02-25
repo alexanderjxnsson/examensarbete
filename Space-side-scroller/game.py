@@ -4,7 +4,7 @@ from player import *
 from asteroid import Asteroid
 import pygame.freetype
 import random
-import math
+import time
 
 class Game():
     def __init__(self):
@@ -59,16 +59,34 @@ class Game():
     def game_loop(self):
         self.score = 0
         self.health = 3
+        spawn = True
         self.player_sprite = Player(self, (0, self.DISPLAY_H / 2), self.DISPLAY_W, self.DISPLAY_H)
         self.player = pygame.sprite.GroupSingle(self.player_sprite)
-        pos = random.randrange(480)
-        self.asteroid = Asteroid(self, (850, pos), self.DISPLAY_W, self.DISPLAY_H)
-        self.obstacle = pygame.sprite.Group(self.asteroid)
         self.bullet_group = pygame.sprite.Group()
+        self.obstacle = pygame.sprite.Group()
+        
         while self.playing:
             #Check the event handler for events
             self.check_events()
-            
+
+            # Get random numbers for spawn position and when to spawn
+            pos = random.randint(85, 400)
+            spawn_asteroid = random.randrange(500)
+
+            # If spawn_asteroid is five, we create and spawn one
+            if spawn_asteroid == 5:
+                self.asteroid = Asteroid(self, (850, pos), self.DISPLAY_W, self.DISPLAY_H)
+                self.obstacle.add(self.asteroid)
+
+            # When we reach 0 in healt, pause and exit
+            if self.health == 0:
+                self.draw_text('GAME OVER', 40, self.DISPLAY_W / 2, self.DISPLAY_H / 2 - 100)
+                self.window.blit(self.display, (0,0))
+                pygame.display.update()
+                time.sleep(3)
+                self.playing = False
+                scores.append(self.score)
+ 
             #Exit game loop with back key
             if self.BACK_KEY:
                 self.playing = False
@@ -106,7 +124,7 @@ class Game():
                 self.check_events()
                 self.window.blit(self.display, (0,0))
                 pygame.display.update()
- 
+
     def start_pressed(self):
         pygame.event.post(self.start_event)
     def back_pressed(self):

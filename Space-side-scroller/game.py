@@ -69,13 +69,14 @@ class Game():
             self.check_events()
 
             # Get random numbers for spawn position and when to spawn
-            pos = random.randint(85, 400)
-            spawn_asteroid = random.randrange(500)
+            pos = random.randint(0, 480)
+            spawn_asteroid = random.randrange(200)
+            which_asteroid = random.randint(1,2)
+            random_speed = random.randint(1, 5)
 
             # If spawn_asteroid is five, we create and spawn one
             if spawn_asteroid == 5:
-                self.asteroid = Asteroid(self, (850, pos), self.DISPLAY_W, self.DISPLAY_H)
-                self.obstacle.add(self.asteroid)
+                self.obstacle.add(Asteroid(self, (850, pos), self.DISPLAY_W, self.DISPLAY_H, which_asteroid, random_speed))
 
             # When we reach 0 in healt, pause and exit
             if self.health == 0:

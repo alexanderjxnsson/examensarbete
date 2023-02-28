@@ -33,7 +33,8 @@ class MainMenu(Menu):
         self.highscorex, self.highscorey = self.mid_w, self.mid_h + 80
         self.creditsx, self.creditsy = self.mid_w, self.mid_h + 120
         self.quitx, self.quity = self.mid_w, self.mid_h + 160
-        self.cursor_rect.midtop = (self.startx + self.offset, self.starty)
+        self.testx, self.testy = self.mid_w, self.mid_h + 200
+        self.cursor_rect.midtop = ((self.startx + self.offset), self.starty)
         self.dt = 0
         self.clock = pygame.time.Clock()
         self.joystick_timer = 0
@@ -56,30 +57,30 @@ class MainMenu(Menu):
     def move_cursor(self):
         if self.game.DOWN_KEY:
             if self.state == 'Start':
-                self.cursor_rect.midtop = (self.highscorex + self.offset, self.highscorey)
+                self.cursor_rect = pygame.Rect.move(self.cursor_rect, 0, 40)
                 self.state = 'Highscore'
             elif self.state  == 'Highscore':
-                self.cursor_rect.midtop = (self.creditsx + self.offset, self.creditsy)
+                self.cursor_rect = pygame.Rect.move(self.cursor_rect, 0, 40)
                 self.state = 'Credits'
             elif self.state == 'Credits':
-                self.cursor_rect.midtop = (self.quitx + self.offset, self.quity)
+                self.cursor_rect = pygame.Rect.move(self.cursor_rect, 0, 40)
                 self.state = 'Quit'
             elif self.state == 'Quit':
-                self.cursor_rect.midtop = (self.startx + self.offset, self.starty)
+                self.cursor_rect = pygame.Rect.move(self.cursor_rect, 0, -120)
                 self.state = 'Start'
 
         if self.game.UP_KEY:
             if self.state == 'Start':
-                self.cursor_rect.midtop = (self.quitx + self.offset, self.quity)
+                self.cursor_rect = pygame.Rect.move(self.cursor_rect, 0, 120)
                 self.state = 'Quit'
             elif self.state  == 'Highscore':
-                self.cursor_rect.midtop = (self.startx + self.offset, self.starty)
+                self.cursor_rect = pygame.Rect.move(self.cursor_rect, 0, -40)
                 self.state = 'Start'
             elif self.state == 'Credits':
-                self.cursor_rect.midtop = (self.highscorex + self.offset, self.highscorey)
+                self.cursor_rect = pygame.Rect.move(self.cursor_rect, 0, -40)
                 self.state = 'Highscore'
             elif self.state == 'Quit':
-                self.cursor_rect.midtop = (self.creditsx + self.offset, self.creditsy)
+                self.cursor_rect = pygame.Rect.move(self.cursor_rect, 0, -40)
                 self.state = 'Credits'
     
     def check_input(self):
@@ -87,6 +88,7 @@ class MainMenu(Menu):
         if self.game.START_KEY:
             if self.state == 'Start':
                 self.game.playing = True
+                self.game.start_time = int(pygame.time.get_ticks() / 1000)
             if self.state == 'Highscore':
                 self.game.curr_menu = self.game.highscore
             if self.state == 'Credits':
@@ -164,7 +166,7 @@ class QuitMenu(Menu):
         self.state = 'No'
         self.nox, self.noy = self.mid_w, self.mid_h + 20
         self.yesx, self.yesy = self.mid_w, self.mid_h + 60
-        self.cursor_rect.midtop = (self.nox + self.offset, self.noy)
+        self.cursor_rect.midtop = ((self.nox + self.offset), self.noy)
         self.clock = pygame.time.Clock()
 
     def display_menu(self):
@@ -187,10 +189,10 @@ class QuitMenu(Menu):
         elif self.game.UP_KEY or self.game.DOWN_KEY:
             if self.state == 'No':
                 self.state = 'Yes'
-                self.cursor_rect.midtop = (self.yesx + self.offset, self.yesy)
+                self.cursor_rect = pygame.Rect.move(self.cursor_rect, 0, 40)
             elif self.state == 'Yes':
                 self.state = 'No'
-                self.cursor_rect.midtop = (self.nox + self.offset, self.noy)
+                self.cursor_rect = pygame.Rect.move(self.cursor_rect, 0, -40)
         elif self.game.START_KEY:
             if self.state == 'No':
                 self.game.curr_menu = self.game.main_menu

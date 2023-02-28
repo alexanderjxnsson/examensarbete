@@ -1,7 +1,7 @@
 import pygame
 from global_var import *
 
-class Player(pygame.sprite.Sprite):
+class Enemies(pygame.sprite.Sprite):
     def __init__(self, game, pos, x_const, y_const):
         pygame.sprite.Sprite.__init__(self)
         self.game = game

@@ -88,6 +88,7 @@ class MainMenu(Menu):
         if self.game.START_KEY:
             if self.state == 'Start':
                 self.game.playing = True
+                self.game.start_time = int(pygame.time.get_ticks() / 1000)
             if self.state == 'Highscore':
                 self.game.curr_menu = self.game.highscore
             if self.state == 'Credits':

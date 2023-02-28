@@ -55,6 +55,7 @@ class Game():
         self.tiles = 3
         self.clock = pygame.time.Clock()
         self.FPS = 80
+        self.start_time = 0
         
     def game_loop(self):
         self.score = 0
@@ -64,7 +65,9 @@ class Game():
         self.bullet_group = pygame.sprite.Group()
         self.obstacle = pygame.sprite.Group()
         
+        
         while self.playing:
+            self.current_time = int(pygame.time.get_ticks() / 1000) - self.start_time
             #Check the event handler for events
             self.check_events()
 
@@ -100,6 +103,8 @@ class Game():
                 self.scroll = 0
 
             #Updates
+            self.score += self.current_time
+            #self.score = int(self.score)
             self.bullet_group.update()
             self.bullet_group.draw(self.display)
             self.player.update()

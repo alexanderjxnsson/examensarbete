@@ -7,19 +7,17 @@ class Asteroid(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         self.game = game
         if rpi:
-            self.image1 = pygame.image.load("Images/as2.png").convert_alpha()
-            self.image2 = pygame.image.load("Images/as3.png").convert_alpha()
+            self.image1 = pygame.image.load("Images/as2_new.png").convert_alpha()
+            self.image2 = pygame.image.load("Images/as3_new.png").convert_alpha()
         else:
-            self.image1 = pygame.image.load("Space-side-scroller/Images/as2.png").convert_alpha()
-            self.image2 = pygame.image.load("Space-side-scroller/Images/as3.png").convert_alpha()
-        
-
+            self.image1 = pygame.image.load("Space-side-scroller/Images/as2_new.png").convert_alpha()
+            self.image2 = pygame.image.load("Space-side-scroller/Images/as3_new.png").convert_alpha()
         
         if asteroid_choice == 1:
-            self.image = pygame.transform.scale(self.image1, (82, 80))
+            self.image = self.image1
             self.rect = self.image.get_rect(center=pos)
         elif asteroid_choice == 2:
-            self.image = pygame.transform.scale(self.image2, (80, 60))
+            self.image = self.image2
             self.rect = self.image.get_rect(center=pos)
         self.max_x_const = x_const
         self.max_y_const = y_const

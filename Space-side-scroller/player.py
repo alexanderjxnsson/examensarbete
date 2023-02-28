@@ -6,10 +6,9 @@ class Player(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         self.game = game
         if rpi:
-            self.image = pygame.image.load("Images/player.png").convert_alpha()
+            self.image = pygame.image.load("Images/player_new.png").convert_alpha()
         else:
-            self.image = pygame.image.load("Space-side-scroller/Images/player.png").convert_alpha()
-        self.image = pygame.transform.scale(self.image, (64, 81))
+            self.image = pygame.image.load("Space-side-scroller/Images/player_new.png").convert_alpha()
         self.rect = self.image.get_rect(center=pos)
         self.max_x_const = x_const
         self.max_y_const = y_const

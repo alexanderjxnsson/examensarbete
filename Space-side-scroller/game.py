@@ -2,6 +2,7 @@ import pygame
 from menu import *
 from player import *
 from asteroid import Asteroid
+from enemies import Enemies
 import pygame.freetype
 import random
 import time
@@ -73,12 +74,16 @@ class Game():
 
             # Get random numbers for spawn position and when to spawn
             pos = random.randint(0, 480)
-            spawn_asteroid = random.randrange(200)
+            spawn_obstacles = random.randrange(200)
             which_asteroid = random.randint(1,2)
             random_speed = random.randint(1, 5)
 
-            # If spawn_asteroid is five, we create and spawn one
-            if spawn_asteroid == 5:
+            # Spawn enemeis
+            if spawn_obstacles == 10:
+                self.obstacle.add(Enemies(self, (850, pos), self.DISPLAY_W, self.DISPLAY_H, random_speed))
+
+            # If spawn_obstacles is five, we create and spawn one
+            if spawn_obstacles == 5:
                 self.obstacle.add(Asteroid(self, (850, pos), self.DISPLAY_W, self.DISPLAY_H, which_asteroid, random_speed))
 
             # When we reach 0 in healt, pause and exit

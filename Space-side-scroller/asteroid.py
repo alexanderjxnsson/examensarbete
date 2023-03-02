@@ -24,7 +24,7 @@ class Asteroid(pygame.sprite.Sprite):
         self.ship_speed = speed
 
     #Function to move the ship
-    def move_ship(self):
+    def move_asteroid(self):
         self.rect.x -= self.ship_speed
     
     #Function to check ship constraints
@@ -33,5 +33,5 @@ class Asteroid(pygame.sprite.Sprite):
             self.kill()
         
     def update(self):
-        self.move_ship()
+        self.move_asteroid()
         self.constraint()

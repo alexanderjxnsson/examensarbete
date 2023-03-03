@@ -64,6 +64,7 @@ class Game():
         self.player_sprite = Player(self, (0, self.DISPLAY_H / 2), self.DISPLAY_W, self.DISPLAY_H)
         self.player = pygame.sprite.GroupSingle(self.player_sprite)
         self.bullet_group = pygame.sprite.Group()
+        self.enemy_bullet = pygame.sprite.Group()
         self.obstacle = pygame.sprite.Group()
         
         
@@ -74,7 +75,7 @@ class Game():
 
             # Get random numbers for spawn position and when to spawn
             pos = random.randint(0, 480)
-            spawn_obstacles = random.randrange(200)
+            spawn_obstacles = random.randrange(150)
             which_asteroid = random.randint(1,2)
             random_speed = random.randint(1, 5)
 
@@ -112,13 +113,16 @@ class Game():
             #self.score = int(self.score)
             self.bullet_group.update()
             self.bullet_group.draw(self.display)
+            self.enemy_bullet.update()
+            self.enemy_bullet.draw(self.display)
             self.player.update()
             self.player.draw(self.display)
             self.obstacle.update()
             self.obstacle.draw(self.display)
             self.stats()
             body_hit = pygame.sprite.spritecollide(self.player_sprite, self.obstacle, True)
-            if body_hit:
+            enemy_fire_hit = pygame.sprite.spritecollide(self.player_sprite, self.enemy_bullet, True)
+            if body_hit or enemy_fire_hit:
                 self.health -= 1
             bullet_hit = pygame.sprite.groupcollide(self.obstacle, self.bullet_group, True, True)
             if bullet_hit:

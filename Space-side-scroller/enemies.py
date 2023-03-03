@@ -14,7 +14,7 @@ class Enemies(pygame.sprite.Sprite):
         self.max_y_const = y_const
         self.ship_speed = speed
         self.bullet_time = 0
-        self.bullet_cooldown = 400
+        self.bullet_cooldown = 1200
         self.ready = True
         
         
@@ -34,15 +34,19 @@ class Enemies(pygame.sprite.Sprite):
         #self.game.display.blit(self.image, (self.rect.x, self.rect.y))
     
     def create_bullet(self):
-        return Bullet(self.rect.x + 25, self.rect.y + 41)
-    
+        return Enemy_bullet(self.rect.x + 40, self.rect.y + 50)    
+
     def recharge(self):
         if not self.ready:
             current_time = pygame.time.get_ticks()
             if current_time - self.bullet_time >= self.bullet_cooldown:
                 self.ready = True
+        if self.ready:
+            self.ready = False
+            self.bullet_time = pygame.time.get_ticks()
+            self.game.enemy_bullet.add(self.create_bullet())
 
-class Bullet(pygame.sprite.Sprite):
+class Enemy_bullet(pygame.sprite.Sprite):
     def __init__(self, pos_x, pos_y):
         super().__init__()
         if rpi:

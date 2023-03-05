@@ -14,7 +14,7 @@ class Enemies(pygame.sprite.Sprite):
         self.max_y_const = y_const
         self.ship_speed = speed
         self.bullet_time = 0
-        self.bullet_cooldown = 1200
+        self.bullet_cooldown = 1750
         self.ready = True
         
         

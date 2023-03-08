@@ -2,61 +2,30 @@ import pygame
 from global_var import *
 
 class Enemies(pygame.sprite.Sprite):
-    def __init__(self, game, pos, x_const, y_const):
+    def __init__(self, game, pos, x_const, y_const, speed):
         pygame.sprite.Sprite.__init__(self)
         self.game = game
         if rpi:
-            self.image = pygame.image.load("Images/player.png").convert_alpha()
+            self.image = pygame.image.load("Images/enemy1_new.png").convert_alpha()
         else:
-            self.image = pygame.image.load("Space-side-scroller/Images/player.png").convert_alpha()
-        self.image = pygame.transform.scale(self.image, (64, 81))
+            self.image = pygame.image.load("Space-side-scroller/Images/enemy1_new.png").convert_alpha()
         self.rect = self.image.get_rect(center=pos)
         self.max_x_const = x_const
         self.max_y_const = y_const
-        self.ship_speed = 5
+        self.ship_speed = speed
         self.bullet_time = 0
-        self.bullet_cooldown = 400
+        self.bullet_cooldown = 1750
         self.ready = True
+        
         
     #Function to move the ship
     def move_ship(self):
-        keys = pygame.key.get_pressed()
-        if keys[pygame.K_DOWN]:
-            self.rect.y += self.ship_speed
-        if keys[pygame.K_UP]:
-            self.rect.y -= self.ship_speed
-        if keys[pygame.K_LEFT]:
-            self.rect.x -= self.ship_speed
-        if keys[pygame.K_RIGHT]:
-            self.rect.x += self.ship_speed
-        if keys[pygame.K_RETURN] and self.ready:
-            self.ready = False
-            self.bullet_time = pygame.time.get_ticks()
-            self.game.bullet_group.add(self.create_bullet())
-        if rpi:
-            if ((self.game.chanY.value * 480) < 220):
-                self.rect.y += self.ship_speed
-            if ((self.game.chanY.value * 480) > 260):
-                self.rect.y -= self.ship_speed
-            if ((self.game.chanX.value * 800) < 380):
-                self.rect.x -= self.ship_speed
-            if ((self.game.chanX.value * 800) > 420):
-                self.rect.x += self.ship_speed
-            if self.game.start_btn.is_pressed and self.ready:
-                self.ready = False
-                self.bullet_time = pygame.time.get_ticks()
-                self.game.bullet_group.add(self.create_bullet())
+        self.rect.x -= self.ship_speed
     
     #Function to check ship constraints
     def constraint(self):
-        if self.rect.left <= 0:
-            self.rect.left = 0
-        if self.rect.top <= 0:
-            self.rect.top = 0
-        if self.rect.right >= self.max_x_const:
-            self.rect.right = self.max_x_const
-        if self.rect.bottom >= self.max_y_const:
-            self.rect.bottom = self.max_y_const
+        if self.rect.left <= -150:
+            self.kill()
 
     def update(self):
         self.move_ship()
@@ -65,15 +34,19 @@ class Enemies(pygame.sprite.Sprite):
         #self.game.display.blit(self.image, (self.rect.x, self.rect.y))
     
     def create_bullet(self):
-        return Bullet(self.rect.x + 25, self.rect.y + 41)
-    
+        return Enemy_bullet(self.rect.x + 40, self.rect.y + 50)    
+
     def recharge(self):
         if not self.ready:
             current_time = pygame.time.get_ticks()
             if current_time - self.bullet_time >= self.bullet_cooldown:
                 self.ready = True
+        if self.ready:
+            self.ready = False
+            self.bullet_time = pygame.time.get_ticks()
+            self.game.enemy_bullet.add(self.create_bullet())
 
-class Bullet(pygame.sprite.Sprite):
+class Enemy_bullet(pygame.sprite.Sprite):
     def __init__(self, pos_x, pos_y):
         super().__init__()
         if rpi:
@@ -84,7 +57,7 @@ class Bullet(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(center = (pos_x, pos_y))
     
     def update(self):
-        self.rect.x += 10
-        if self.rect.x >= 820:
+        self.rect.x -= 10
+        if self.rect.x <= -150:
             self.kill()
         

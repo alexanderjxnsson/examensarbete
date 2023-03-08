@@ -2,7 +2,7 @@ import pygame
 from menu import *
 from player import *
 from asteroid import Asteroid
-import pygame.freetype
+from enemies import Enemies
 import random
 import time
 
@@ -63,6 +63,8 @@ class Game():
         self.player_sprite = Player(self, (0, self.DISPLAY_H / 2), self.DISPLAY_W, self.DISPLAY_H)
         self.player = pygame.sprite.GroupSingle(self.player_sprite)
         self.bullet_group = pygame.sprite.Group()
+        self.enemy_group = pygame.sprite.Group()
+        self.enemy_bullet = pygame.sprite.Group()
         self.obstacle = pygame.sprite.Group()
         
         
@@ -73,11 +75,16 @@ class Game():
 
             # Get random numbers for spawn position and when to spawn
             pos = random.randint(0, 480)
-            spawn_asteroid = random.randrange(200)
+            spawn_asteroid = random.randrange(150)
+            spawn_enemy = random.randrange(350)
             which_asteroid = random.randint(1,2)
-            random_speed = random.randint(1, 5)
+            random_speed = random.randint(1, 5) 
 
-            # If spawn_asteroid is five, we create and spawn one
+            # Spawn enemeis
+            if spawn_enemy == 10:
+                self.enemy_group.add(Enemies(self, (850, pos), self.DISPLAY_W, self.DISPLAY_H, random_speed))
+
+            # If spawn_obstacles is five, we create and spawn one
             if spawn_asteroid == 5:
                 self.obstacle.add(Asteroid(self, (850, pos), self.DISPLAY_W, self.DISPLAY_H, which_asteroid, random_speed))
 
@@ -104,19 +111,24 @@ class Game():
 
             #Updates
             self.score += self.current_time
-            #self.score = int(self.score)
             self.bullet_group.update()
             self.bullet_group.draw(self.display)
+            self.enemy_bullet.update()
+            self.enemy_bullet.draw(self.display)
             self.player.update()
             self.player.draw(self.display)
             self.obstacle.update()
             self.obstacle.draw(self.display)
+            self.enemy_group.update()
+            self.enemy_group.draw(self.display)
             self.stats()
             body_hit = pygame.sprite.spritecollide(self.player_sprite, self.obstacle, True)
-            if body_hit:
+            enemy_fire_hit = pygame.sprite.spritecollide(self.player_sprite, self.enemy_bullet, True)
+            if body_hit or enemy_fire_hit:
                 self.health -= 1
-            bullet_hit = pygame.sprite.groupcollide(self.obstacle, self.bullet_group, True, True)
-            if bullet_hit:
+            bullet_hit_asteroid = pygame.sprite.groupcollide(self.obstacle, self.bullet_group, True, True)
+            bullet_hit_enemy = pygame.sprite.groupcollide(self.enemy_group, self.bullet_group, True, True)
+            if bullet_hit_asteroid or bullet_hit_enemy:
                 self.score += 100
             self.window.blit(self.display, (0,0))
             pygame.display.update()
@@ -222,8 +234,3 @@ class Game():
         self.hpx, self.hpy = 4, 35
         self.draw_score("Score " + str(self.score), 30, self.scorex, self.scorey)
         self.draw_score("Health " + str(self.health), 30, self.hpx, self.hpy)
-
-        # pygame.freetype.init()
-        # font = pygame.freetype.Font(self.font_name, 30)
-        # font.render_to(self.display, (4, 4), "Score " + str(self.score), (254, 254, 254), size=30)
-        # font.render_to(self.display, (4, 33), "Heatlh " + str(self.health), (254, 254, 254), size=30)

@@ -8,10 +8,10 @@ class Asteroid(pygame.sprite.Sprite):
         self.game = game
         if rpi:
             self.image1 = pygame.image.load("Images/as2_new.png").convert_alpha()
-            self.image2 = pygame.image.load("Images/as3_new.png").convert_alpha()
+            self.image2 = pygame.image.load("Images/as3_new_crop.png").convert_alpha()
         else:
             self.image1 = pygame.image.load("Space-side-scroller/Images/as2_new.png").convert_alpha()
-            self.image2 = pygame.image.load("Space-side-scroller/Images/as3_new.png").convert_alpha()
+            self.image2 = pygame.image.load("Space-side-scroller/Images/as3_new_crop.png").convert_alpha()
         
         if asteroid_choice == 1:
             self.image = self.image1

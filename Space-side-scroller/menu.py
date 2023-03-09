@@ -16,7 +16,6 @@ class Menu():
             self.bg_img_menu = pygame.image.load('Images/bg_menu_new.jpg').convert()
         else:
             self.bg_img_menu = pygame.image.load('Space-side-scroller/Images/bg_menu_new.jpg').convert()
-        #self.bg_img_menu = pygame.transform.scale(self.bg_img_menu, (900, 600))
     def draw_cursor(self):
         self.game.draw_text('*', 15, self.cursor_rect.x, self.cursor_rect.y)
 
@@ -118,16 +117,16 @@ class HighscoreMenu(Menu):
             self.blit_screen()
 
     def read_highscore():
-        if not os.path.isfile(fileName):
-            file = open(fileName, 'w+')
+        if not os.path.isfile(file_name):
+            file = open(file_name, 'w+')
         else:
-            file = open(fileName, 'r')
+            file = open(file_name, 'r')
         for line in file.readlines():
             scores.append(int(line))
         file.close()
 
     def write_highscore(fill_list):
-        file = open(fileName, 'a')
+        file = open(file_name, 'a')
         scores.sort(reverse=True)
         if fill_list:
             for x in range(0, 5):

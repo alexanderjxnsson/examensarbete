@@ -61,7 +61,6 @@ class Player(pygame.sprite.Sprite):
         self.move_ship()
         self.constraint()
         self.recharge()
-        #self.game.display.blit(self.image, (self.rect.x, self.rect.y))
     
     def create_bullet(self):
         return Bullet(self.rect.x + 25, self.rect.y + 41)
@@ -76,10 +75,9 @@ class Bullet(pygame.sprite.Sprite):
     def __init__(self, pos_x, pos_y):
         super().__init__()
         if rpi:
-            self.image = pygame.image.load("Images/bullet.png").convert_alpha()
+            self.image = pygame.image.load("Images/bullet_yellow.png").convert_alpha()
         else:
-            self.image = pygame.image.load("Space-side-scroller/Images/bullet.png").convert_alpha()
-        #self.image.fill((255,0,0))
+            self.image = pygame.image.load("Space-side-scroller/Images/bullet_yellow.png").convert_alpha()
         self.rect = self.image.get_rect(center = (pos_x, pos_y))
     
     def update(self):

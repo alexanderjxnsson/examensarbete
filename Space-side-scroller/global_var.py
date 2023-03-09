@@ -1,5 +1,5 @@
 rpi = False
 if rpi:
-    fileName = "highscore.txt"
+    file_name = "highscore.txt"
 else:
-    fileName = "Space-side-scroller/highscore.txt"
+    file_name = "Space-side-scroller/highscore.txt"

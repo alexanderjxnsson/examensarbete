@@ -123,8 +123,9 @@ class Game():
             self.enemy_group.draw(self.display)
             self.stats()
             body_hit = pygame.sprite.spritecollide(self.player_sprite, self.obstacle, True)
+            player_enemy_collide =pygame.sprite.spritecollide(self.player_sprite, self.enemy_group, True)
             enemy_fire_hit = pygame.sprite.spritecollide(self.player_sprite, self.enemy_bullet, True)
-            if body_hit or enemy_fire_hit:
+            if body_hit or enemy_fire_hit or player_enemy_collide:
                 self.health -= 1
             bullet_hit_asteroid = pygame.sprite.groupcollide(self.obstacle, self.bullet_group, True, True)
             bullet_hit_enemy = pygame.sprite.groupcollide(self.enemy_group, self.bullet_group, True, True)

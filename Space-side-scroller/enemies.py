@@ -27,6 +27,10 @@ class Enemies(pygame.sprite.Sprite):
         if self.rect.left <= -150:
             self.kill()
 
+    def return_pos(self):
+        val = self.rect.x
+        return val
+
     def update(self):
         self.move_ship()
         self.constraint()

@@ -12,7 +12,7 @@ class Player(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(center=pos)
         self.max_x_const = x_const
         self.max_y_const = y_const
-        self.ship_speed = 5
+        self.ship_speed = 8
         self.bullet_time = 0
         self.bullet_cooldown = 400
         self.ready = True
@@ -81,7 +81,7 @@ class Bullet(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(center = (pos_x, pos_y))
     
     def update(self):
-        self.rect.x += 10
+        self.rect.x += 12
         if self.rect.x >= 820:
             self.kill()
         

@@ -60,7 +60,7 @@ class Enemy_bullet(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(center = (pos_x, pos_y))
     
     def update(self):
-        self.rect.x -= 10
+        self.rect.x -= 12
         if self.rect.x <= -150:
             self.kill()
         

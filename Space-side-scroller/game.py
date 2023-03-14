@@ -78,7 +78,7 @@ class Game():
             spawn_asteroid = random.randrange(150)
             spawn_enemy = random.randrange(350)
             which_asteroid = random.randint(1,2)
-            random_speed = random.randint(2, 5) 
+            random_speed = random.randint(3, 6) 
 
             # Spawn enemeis
             if spawn_enemy == 10:
@@ -118,7 +118,7 @@ class Game():
             #Scrolling Background
             for i in range(0, self.tiles):
                 self.display.blit(self.bg_game_scroll, (i * self.bg_game_scroll_width + self.scroll, 0))
-            self.scroll -= 3
+            self.scroll -= 4
             if abs(self.scroll) > self.bg_game_scroll_width:
                 self.scroll = 0
 

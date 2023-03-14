@@ -27,6 +27,10 @@ class Enemies(pygame.sprite.Sprite):
         if self.rect.left <= -150:
             self.kill()
 
+    def return_pos(self):
+        val = self.rect.x
+        return val
+
     def update(self):
         self.move_ship()
         self.constraint()
@@ -56,7 +60,7 @@ class Enemy_bullet(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(center = (pos_x, pos_y))
     
     def update(self):
-        self.rect.x -= 10
+        self.rect.x -= 12
         if self.rect.x <= -150:
             self.kill()
         

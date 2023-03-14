@@ -78,18 +78,31 @@ class Game():
             spawn_asteroid = random.randrange(150)
             spawn_enemy = random.randrange(350)
             which_asteroid = random.randint(1,2)
-            random_speed = random.randint(1, 5) 
+            random_speed = random.randint(3, 6) 
 
             # Spawn enemeis
             if spawn_enemy == 10:
-                self.enemy_group.add(Enemies(self, (850, pos), self.DISPLAY_W, self.DISPLAY_H, random_speed))
+                self.enemy_sprite = Enemies(self, (900, pos), self.DISPLAY_W, self.DISPLAY_H, random_speed)
+                self.enemy_group.add(self.enemy_sprite)
+                spawn_col_pos_enemy = Enemies.return_pos(self.enemy_sprite)
+                enemy_spawn_col = pygame.sprite.spritecollide(self.enemy_sprite, self.enemy_group, True)
+                if spawn_col_pos_enemy > 850 and enemy_spawn_col:
+                    self.enemy_sprite = Enemies(self, (900, pos), self.DISPLAY_W, self.DISPLAY_H, random_speed)
+                    self.enemy_group.add(self.enemy_sprite)
 
             # If spawn_obstacles is five, we create and spawn one
             if spawn_asteroid == 5:
-                self.obstacle.add(Asteroid(self, (850, pos), self.DISPLAY_W, self.DISPLAY_H, which_asteroid, random_speed))
+                self.asteroid_sprite = Asteroid(self, (900, pos), self.DISPLAY_W, self.DISPLAY_H, which_asteroid, random_speed)
+                self.obstacle.add(self.asteroid_sprite)
+                spawn_col_pos_asteroid = Asteroid.return_pos(self.asteroid_sprite)
+                asteroid_spawn_col = pygame.sprite.spritecollide(self.asteroid_sprite, self.obstacle, True)
+                if spawn_col_pos_asteroid > 850 and asteroid_spawn_col:
+                    self.asteroid_sprite = Asteroid(self, (900, pos), self.DISPLAY_W, self.DISPLAY_H, which_asteroid, random_speed)
+                    self.obstacle.add(self.asteroid_sprite)
 
             # When we reach 0 in healt, pause and exit
             if self.health == 0:
+                self.stats()
                 self.draw_text('GAME OVER', 40, self.DISPLAY_W / 2, self.DISPLAY_H / 2 - 100)
                 self.window.blit(self.display, (0,0))
                 pygame.display.update()
@@ -105,7 +118,7 @@ class Game():
             #Scrolling Background
             for i in range(0, self.tiles):
                 self.display.blit(self.bg_game_scroll, (i * self.bg_game_scroll_width + self.scroll, 0))
-            self.scroll -= 3
+            self.scroll -= 4
             if abs(self.scroll) > self.bg_game_scroll_width:
                 self.scroll = 0
 

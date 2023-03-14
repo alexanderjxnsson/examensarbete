@@ -27,6 +27,10 @@ class Asteroid(pygame.sprite.Sprite):
     def move_asteroid(self):
         self.rect.x -= self.ship_speed
     
+    def return_pos(self):
+        val = self.rect.x
+        return val
+    
     #Function to check ship constraints
     def constraint(self):
         if self.rect.left <= -150:

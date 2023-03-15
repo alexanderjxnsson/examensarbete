@@ -14,8 +14,10 @@ class Menu():
         self.offset = -200
         if rpi:
             self.bg_img_menu = pygame.image.load('Images/bg_menu_new.jpg').convert()
+            self.ahlm_logo = pygame.image.load('Images/ahlm.png').convert_alpha()
         else:
             self.bg_img_menu = pygame.image.load('Space-side-scroller/Images/bg_menu_new.jpg').convert()
+            self.ahlm_logo = pygame.image.load('Space-side-scroller/Images/ahlm.png').convert_alpha()
     def draw_cursor(self):
         self.game.draw_text('*', 15, self.cursor_rect.x, self.cursor_rect.y)
 
@@ -157,6 +159,8 @@ class CreditsMenu(Menu):
             self.game.draw_text('Credits', 40, self.game.DISPLAY_W / 2, self.game.DISPLAY_H / 2 - 30)
             self.game.draw_text('Adam Johansson Kusnierz', 35, self.game.DISPLAY_W / 2, self.game.DISPLAY_H / 2 + 20)
             self.game.draw_text('Alexander Jxnsson', 35, self.game.DISPLAY_W / 2, self.game.DISPLAY_H / 2 + 60)
+            self.game.draw_text('Sponsored by ', 15, self.game.DISPLAY_W / 2 + 250, self.game.DISPLAY_H / 2 + 125)
+            self.game.display.blit(self.ahlm_logo, (500, 380))
             self.blit_screen()
 
 class QuitMenu(Menu):

@@ -58,97 +58,26 @@ class Game():
         self.start_time = 0
         
     def game_loop(self):
-        self.score = 0
-        self.health = 3
-        self.player_sprite = Player(self, (0, self.DISPLAY_H / 2), self.DISPLAY_W, self.DISPLAY_H)
-        self.player = pygame.sprite.GroupSingle(self.player_sprite)
-        self.bullet_group = pygame.sprite.Group()
-        self.enemy_group = pygame.sprite.Group()
-        self.enemy_bullet = pygame.sprite.Group()
-        self.obstacle = pygame.sprite.Group()
-        
+        self.game_initializations()
         
         while self.playing:
             self.current_time = int(pygame.time.get_ticks() / 1000) - self.start_time
             #Check the event handler for events
             self.check_events()
+            self.spawn_other()
 
-            # Get random numbers for spawn position and when to spawn
-            pos = random.randint(0, 480)
-            spawn_asteroid = random.randrange(150)
-            spawn_enemy = random.randrange(350)
-            which_asteroid = random.randint(1,2)
-            random_speed = random.randint(3, 6) 
-
-            # Spawn enemeis
-            if spawn_enemy == 10:
-                self.enemy_sprite = Enemies(self, (900, pos), self.DISPLAY_W, self.DISPLAY_H, random_speed)
-                self.enemy_group.add(self.enemy_sprite)
-                spawn_col_pos_enemy = Enemies.return_pos(self.enemy_sprite)
-                enemy_spawn_col = pygame.sprite.spritecollide(self.enemy_sprite, self.enemy_group, True)
-                if spawn_col_pos_enemy > 850 and enemy_spawn_col:
-                    self.enemy_sprite = Enemies(self, (900, pos), self.DISPLAY_W, self.DISPLAY_H, random_speed)
-                    self.enemy_group.add(self.enemy_sprite)
-
-            # If spawn_obstacles is five, we create and spawn one
-            if spawn_asteroid == 5:
-                self.asteroid_sprite = Asteroid(self, (900, pos), self.DISPLAY_W, self.DISPLAY_H, which_asteroid, random_speed)
-                self.obstacle.add(self.asteroid_sprite)
-                spawn_col_pos_asteroid = Asteroid.return_pos(self.asteroid_sprite)
-                asteroid_spawn_col = pygame.sprite.spritecollide(self.asteroid_sprite, self.obstacle, True)
-                if spawn_col_pos_asteroid > 850 and asteroid_spawn_col:
-                    self.asteroid_sprite = Asteroid(self, (900, pos), self.DISPLAY_W, self.DISPLAY_H, which_asteroid, random_speed)
-                    self.obstacle.add(self.asteroid_sprite)
-
-            # When we reach 0 in healt, pause and exit
-            if self.health == 0:
-                self.stats()
-                self.draw_text('GAME OVER', 40, self.DISPLAY_W / 2, self.DISPLAY_H / 2 - 100)
-                self.window.blit(self.display, (0,0))
-                pygame.display.update()
-                time.sleep(3)
-                self.playing = False
-                scores.append(self.score)
- 
             #Exit game loop with back key
             if self.BACK_KEY:
                 self.playing = False
                 scores.append(self.score)
             
             #Scrolling Background
-            for i in range(0, self.tiles):
-                self.display.blit(self.bg_game_scroll, (i * self.bg_game_scroll_width + self.scroll, 0))
-            self.scroll -= 4
-            if abs(self.scroll) > self.bg_game_scroll_width:
-                self.scroll = 0
+            self.background_scroll()
 
             #Updates
-            self.score += self.current_time
-            self.bullet_group.update()
-            self.bullet_group.draw(self.display)
-            self.enemy_bullet.update()
-            self.enemy_bullet.draw(self.display)
-            self.player.update()
-            self.player.draw(self.display)
-            self.obstacle.update()
-            self.obstacle.draw(self.display)
-            self.enemy_group.update()
-            self.enemy_group.draw(self.display)
-            self.stats()
-            body_hit = pygame.sprite.spritecollide(self.player_sprite, self.obstacle, True)
-            player_enemy_collide =pygame.sprite.spritecollide(self.player_sprite, self.enemy_group, True)
-            enemy_fire_hit = pygame.sprite.spritecollide(self.player_sprite, self.enemy_bullet, True)
-            if body_hit or enemy_fire_hit or player_enemy_collide:
-                self.health -= 1
-            bullet_hit_asteroid = pygame.sprite.groupcollide(self.obstacle, self.bullet_group, True, True)
-            bullet_hit_enemy = pygame.sprite.groupcollide(self.enemy_group, self.bullet_group, True, True)
-            if bullet_hit_asteroid or bullet_hit_enemy:
-                self.score += 100
-            self.window.blit(self.display, (0,0))
-            pygame.display.update()
-            self.reset_keys()
-            self.clock.tick(self.FPS)
-
+            self.updates()
+            self.hits()
+            
             #Loop to pause the game
             while self.paused:
                 self.draw_text('PAUSED', 40, self.DISPLAY_W / 2, self.DISPLAY_H / 2 - 100)
@@ -219,9 +148,43 @@ class Game():
             else:
                 self.main_menu.joystick_timer += self.main_menu.dt
 
+    def background_scroll(self):
+        for i in range(0, self.tiles):
+            self.display.blit(self.bg_game_scroll, (i * self.bg_game_scroll_width + self.scroll, 0))
+        self.scroll -= 4
+        if abs(self.scroll) > self.bg_game_scroll_width:
+            self.scroll = 0
+
+    def updates(self):
+        self.score += self.current_time
+        self.bullet_group.update()
+        self.bullet_group.draw(self.display)
+        self.enemy_bullet.update()
+        self.enemy_bullet.draw(self.display)
+        self.player.update()
+        self.player.draw(self.display)
+        self.obstacle.update()
+        self.obstacle.draw(self.display)
+        self.enemy_group.update()
+        self.enemy_group.draw(self.display)
+        self.stats()
+        self.window.blit(self.display, (0,0))
+        pygame.display.update()
+        self.reset_keys()
+        self.clock.tick(self.FPS)
+
     def reset_keys(self):
         self.UP_KEY, self.DOWN_KEY, self.START_KEY, self.BACK_KEY = False, False, False, False
 
+    def game_initializations(self):
+        self.score = 0
+        self.health = 3
+        self.player_sprite = Player(self, (0, self.DISPLAY_H / 2), self.DISPLAY_W, self.DISPLAY_H)
+        self.player = pygame.sprite.GroupSingle(self.player_sprite)
+        self.bullet_group = pygame.sprite.Group()
+        self.enemy_group = pygame.sprite.Group()
+        self.enemy_bullet = pygame.sprite.Group()
+        self.obstacle = pygame.sprite.Group()
     
     ### Function to draw text on the screen
     ### Take 4 Arguments, "String" or integer, Size of the text, x coordinate, y coordinate
@@ -248,3 +211,51 @@ class Game():
         self.hpx, self.hpy = 4, 35
         self.draw_score("Score " + str(self.score), 30, self.scorex, self.scorey)
         self.draw_score("Health " + str(self.health), 30, self.hpx, self.hpy)
+
+    def spawn_other(self):
+        # Get random numbers for spawn position and when to spawn
+        pos = random.randint(0, 480)
+        spawn_asteroid = random.randrange(150)
+        spawn_enemy = random.randrange(350)
+        which_asteroid = random.randint(1,2)
+        random_speed = random.randint(3, 6) 
+
+        # Spawn enemeis
+        if spawn_enemy == 10:
+            self.enemy_sprite = Enemies(self, (900, pos), self.DISPLAY_W, self.DISPLAY_H, random_speed)
+            self.enemy_group.add(self.enemy_sprite)
+            spawn_col_pos_enemy = Enemies.return_pos(self.enemy_sprite)
+            enemy_spawn_col = pygame.sprite.spritecollide(self.enemy_sprite, self.enemy_group, True)
+            if spawn_col_pos_enemy > 850 and enemy_spawn_col:
+                self.enemy_sprite = Enemies(self, (900, pos), self.DISPLAY_W, self.DISPLAY_H, random_speed)
+                self.enemy_group.add(self.enemy_sprite)
+
+        # If spawn_obstacles is five, we create and spawn one
+        if spawn_asteroid == 5:
+            self.asteroid_sprite = Asteroid(self, (900, pos), self.DISPLAY_W, self.DISPLAY_H, which_asteroid, random_speed)
+            self.obstacle.add(self.asteroid_sprite)
+            spawn_col_pos_asteroid = Asteroid.return_pos(self.asteroid_sprite)
+            asteroid_spawn_col = pygame.sprite.spritecollide(self.asteroid_sprite, self.obstacle, True)
+            if spawn_col_pos_asteroid > 850 and asteroid_spawn_col:
+                self.asteroid_sprite = Asteroid(self, (900, pos), self.DISPLAY_W, self.DISPLAY_H, which_asteroid, random_speed)
+                self.obstacle.add(self.asteroid_sprite)
+    
+    def hits(self):
+        body_hit = pygame.sprite.spritecollide(self.player_sprite, self.obstacle, True)
+        player_enemy_collide =pygame.sprite.spritecollide(self.player_sprite, self.enemy_group, True)
+        enemy_fire_hit = pygame.sprite.spritecollide(self.player_sprite, self.enemy_bullet, True)
+        if body_hit or enemy_fire_hit or player_enemy_collide:
+            self.health -= 1
+            if self.health == 0:
+                self.stats()
+                self.draw_text('GAME OVER', 40, self.DISPLAY_W / 2, self.DISPLAY_H / 2 - 100)
+                self.window.blit(self.display, (0,0))
+                pygame.display.update()
+                time.sleep(3)
+                self.playing = False
+                scores.append(self.score)
+        
+        bullet_hit_asteroid = pygame.sprite.groupcollide(self.obstacle, self.bullet_group, True, True)
+        bullet_hit_enemy = pygame.sprite.groupcollide(self.enemy_group, self.bullet_group, True, True)
+        if bullet_hit_asteroid or bullet_hit_enemy:
+            self.score += 100

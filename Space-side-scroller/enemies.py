@@ -6,9 +6,9 @@ class Enemies(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         self.game = game
         if rpi:
-            self.image = pygame.image.load("Images/enemy1_new_crop.png").convert_alpha()
+            self.image = pygame.image.load("Images/enemy.png").convert_alpha()
         else:
-            self.image = pygame.image.load("Space-side-scroller/Images/enemy1_new_crop.png").convert_alpha()
+            self.image = pygame.image.load("Space-side-scroller/Images/enemy.png").convert_alpha()
         self.rect = self.image.get_rect(center=pos)
         self.max_x_const = x_const
         self.max_y_const = y_const

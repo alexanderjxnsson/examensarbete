@@ -13,10 +13,10 @@ class Menu():
         self.cursor_rect = pygame.Rect(0, 0, 20, 20)
         self.offset = -200
         if rpi:
-            self.bg_img_menu = pygame.image.load('Images/bg_menu_new.jpg').convert()
+            self.bg_img_menu = pygame.image.load('Images/menu_background.jpg').convert()
             self.ahlm_logo = pygame.image.load('Images/ahlm.png').convert_alpha()
         else:
-            self.bg_img_menu = pygame.image.load('Space-side-scroller/Images/bg_menu_new.jpg').convert()
+            self.bg_img_menu = pygame.image.load('Space-side-scroller/Images/menu_background.jpg').convert()
             self.ahlm_logo = pygame.image.load('Space-side-scroller/Images/ahlm.png').convert_alpha()
     def draw_cursor(self):
         self.game.draw_text('*', 15, self.cursor_rect.x, self.cursor_rect.y)

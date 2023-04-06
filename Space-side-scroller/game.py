@@ -174,7 +174,6 @@ class Game():
             spawn_col_pos_enemy = Enemies.return_pos(self.enemy_sprite)
             enemy_spawn_col = pygame.sprite.spritecollide(self.enemy_sprite, self.enemy_group, True)
             if spawn_col_pos_enemy > 850 and enemy_spawn_col:
-                print("ENEMY COLLIDE")
                 self.enemy_sprite = Enemies(self, (900, pos), self.DISPLAY_W, self.DISPLAY_H, random_speed)
                 self.enemy_group.add(self.enemy_sprite)
 
@@ -185,7 +184,6 @@ class Game():
             spawn_col_pos_asteroid = Asteroid.return_pos(self.asteroid_sprite)
             asteroid_spawn_col = pygame.sprite.spritecollide(self.asteroid_sprite, self.obstacle, True)
             if spawn_col_pos_asteroid > 850 and asteroid_spawn_col:
-                print("ASTEROID COLLIDE")
                 self.asteroid_sprite = Asteroid(self, (900, pos), self.DISPLAY_W, self.DISPLAY_H, which_asteroid, random_speed)
                 self.obstacle.add(self.asteroid_sprite)
 

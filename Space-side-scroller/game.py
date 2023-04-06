@@ -74,7 +74,7 @@ class Game():
             self.updates()
             self.hits()
             
-            #Loop to pause the game
+            #Loop the game is paused
             while self.paused:
                 self.draw_text('PAUSED', 40, self.DISPLAY_W / 2, self.DISPLAY_H / 2 - 100)
                 self.check_events()
@@ -92,7 +92,17 @@ class Game():
         pygame.event.post(self.back_event)
     def pause_pressed(self):
         pygame.event.post(self.pause_event)
-        
+
+    def game_initializations(self):
+        self.score = 0
+        self.health = 3
+        self.player_sprite = Player(self, (0, self.DISPLAY_H / 2), self.DISPLAY_W, self.DISPLAY_H)
+        self.player = pygame.sprite.GroupSingle(self.player_sprite)
+        self.bullet_group = pygame.sprite.Group()
+        self.enemy_group = pygame.sprite.Group()
+        self.enemy_bullet = pygame.sprite.Group()
+        self.obstacle = pygame.sprite.Group()
+
     def check_events(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -135,83 +145,19 @@ class Game():
                             self.paused = True
         if rpi:
             if (self.main_menu.joystick_timer >= 0.5) and ((self.chanY.value * 480) < 220): # Y DOWN
-                self.DOWN_KEY = True
+                self.UP_KEY = True
                 self.main_menu.joystick_timer = 0
             elif (self.main_menu.joystick_timer >= 0.5) and ((self.chanY.value * 480) > 260): # Y UP
-                self.UP_KEY = True
+                self.DOWN_KEY = True
                 self.main_menu.joystick_timer = 0 
             elif (self.main_menu.joystick_timer >= 0.5) and ((self.chanX.value * 800) > 420): # X RIGHT
-                self.RIGHT_KEY = True
+                self.LEFT_KEY = True
                 self.main_menu.joystick_timer = 0
             elif (self.main_menu.joystick_timer >= 0.5) and ((self.chanX.value * 800) < 380): # X LEFT
-                self.LEFT_KEY = True
+                self.RIGHT_KEY = True
                 self.main_menu.joystick_timer = 0
             else:
                 self.main_menu.joystick_timer += self.main_menu.dt
-
-    def background_scroll(self):
-        for i in range(0, self.tiles):
-            self.display.blit(self.bg_game_scroll, (i * self.bg_game_scroll_width + self.scroll, 0))
-        self.scroll -= 4
-        if abs(self.scroll) > self.bg_game_scroll_width:
-            self.scroll = 0
-
-    def updates(self):
-        self.score += self.current_time
-        self.bullet_group.update()
-        self.bullet_group.draw(self.display)
-        self.enemy_bullet.update()
-        self.enemy_bullet.draw(self.display)
-        self.player.update()
-        self.player.draw(self.display)
-        self.obstacle.update()
-        self.obstacle.draw(self.display)
-        self.enemy_group.update()
-        self.enemy_group.draw(self.display)
-        self.stats()
-        self.window.blit(self.display, (0,0))
-        pygame.display.update()
-        self.reset_keys()
-        self.clock.tick(self.FPS)
-
-    def reset_keys(self):
-        self.UP_KEY, self.DOWN_KEY, self.START_KEY, self.BACK_KEY = False, False, False, False
-
-    def game_initializations(self):
-        self.score = 0
-        self.health = 3
-        self.player_sprite = Player(self, (0, self.DISPLAY_H / 2), self.DISPLAY_W, self.DISPLAY_H)
-        self.player = pygame.sprite.GroupSingle(self.player_sprite)
-        self.bullet_group = pygame.sprite.Group()
-        self.enemy_group = pygame.sprite.Group()
-        self.enemy_bullet = pygame.sprite.Group()
-        self.obstacle = pygame.sprite.Group()
-    
-    ### Function to draw text on the screen
-    ### Take 4 Arguments, "String" or integer, Size of the text, x coordinate, y coordinate
-    def draw_text(self, text, size, x, y):
-        font = pygame.font.Font(self.font_name, size)
-        text_surface = font.render(str(text), True, self.WHITE)
-        text_rect = text_surface.get_rect()
-        text_rect.centerx = x
-        text_rect.centery = y
-        self.display.blit(text_surface, text_rect)
-    
-    ### Function to draw score on the screen
-    ### Take 4 Arguments, "String" or integer, Size of the text, x coordinate, y coordinate
-    def draw_score(self, text, size, x, y):
-        font = pygame.font.Font(self.font_name, size)
-        text_surface = font.render(str(text), True, self.WHITE)
-        text_rect = text_surface.get_rect()
-        text_rect.x = x
-        text_rect.y = y
-        self.display.blit(text_surface, text_rect)
-
-    def stats(self):
-        self.scorex, self.scorey = 4, 4
-        self.hpx, self.hpy = 4, 35
-        self.draw_score("Score " + str(self.score), 30, self.scorex, self.scorey)
-        self.draw_score("Health " + str(self.health), 30, self.hpx, self.hpy)
 
     def spawn_other(self):
         # Get random numbers for spawn position and when to spawn
@@ -242,7 +188,32 @@ class Game():
                 print("ASTEROID COLLIDE")
                 self.asteroid_sprite = Asteroid(self, (900, pos), self.DISPLAY_W, self.DISPLAY_H, which_asteroid, random_speed)
                 self.obstacle.add(self.asteroid_sprite)
-    
+
+    def background_scroll(self):
+        for i in range(0, self.tiles):
+            self.display.blit(self.bg_game_scroll, (i * self.bg_game_scroll_width + self.scroll, 0))
+        self.scroll -= 4
+        if abs(self.scroll) > self.bg_game_scroll_width:
+            self.scroll = 0
+
+    def updates(self):
+        self.score += self.current_time
+        self.bullet_group.update()
+        self.bullet_group.draw(self.display)
+        self.enemy_bullet.update()
+        self.enemy_bullet.draw(self.display)
+        self.player.update()
+        self.player.draw(self.display)
+        self.obstacle.update()
+        self.obstacle.draw(self.display)
+        self.enemy_group.update()
+        self.enemy_group.draw(self.display)
+        self.stats()
+        self.window.blit(self.display, (0,0))
+        pygame.display.update()
+        self.reset_keys()
+        self.clock.tick(self.FPS)
+
     def hits(self):
         body_hit = pygame.sprite.spritecollide(self.player_sprite, self.obstacle, True)
         player_enemy_collide =pygame.sprite.spritecollide(self.player_sprite, self.enemy_group, True)
@@ -262,3 +233,33 @@ class Game():
         bullet_hit_enemy = pygame.sprite.groupcollide(self.enemy_group, self.bullet_group, True, True)
         if bullet_hit_asteroid or bullet_hit_enemy:
             self.score += 100
+
+    def reset_keys(self):
+        self.UP_KEY, self.DOWN_KEY, self.START_KEY, self.BACK_KEY = False, False, False, False
+    
+    ### Function to draw text on the screen
+    ### Take 4 Arguments, "String" or integer, Size of the text, x coordinate, y coordinate
+    def draw_text(self, text, size, x, y):
+        font = pygame.font.Font(self.font_name, size)
+        text_surface = font.render(str(text), True, self.WHITE)
+        text_rect = text_surface.get_rect()
+        text_rect.centerx = x
+        text_rect.centery = y
+        self.display.blit(text_surface, text_rect)
+    
+    ### Function to draw score on the screen
+    ### Take 4 Arguments, "String" or integer, Size of the text, x coordinate, y coordinate
+    def draw_score(self, text, size, x, y):
+        font = pygame.font.Font(self.font_name, size)
+        text_surface = font.render(str(text), True, self.WHITE)
+        text_rect = text_surface.get_rect()
+        text_rect.x = x
+        text_rect.y = y
+        self.display.blit(text_surface, text_rect)
+
+    def stats(self):
+        self.scorex, self.scorey = 4, 4
+        self.hpx, self.hpy = 4, 35
+        self.draw_score("Score " + str(self.score), 30, self.scorex, self.scorey)
+        self.draw_score("Health " + str(self.health), 30, self.hpx, self.hpy)
+ 

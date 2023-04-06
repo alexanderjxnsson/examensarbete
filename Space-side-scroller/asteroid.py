@@ -27,8 +27,7 @@ class Asteroid(pygame.sprite.Sprite):
         self.rect.x -= self.ship_speed
     
     def return_pos(self):
-        val = self.rect.x
-        return val
+        return self.rect.x 
     
     #Function to check ship constraints
     def constraint(self):

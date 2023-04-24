@@ -1,16 +1,11 @@
 import pygame
-from global_var import *
 
 class Asteroid(pygame.sprite.Sprite):
     def __init__(self, game, pos, x_const, y_const, asteroid_choice, speed):
         pygame.sprite.Sprite.__init__(self)
         self.game = game
-        if rpi:
-            self.image1 = pygame.image.load("Images/asteroid1.png").convert_alpha()
-            self.image2 = pygame.image.load("Images/asteroid2.png").convert_alpha()
-        else:
-            self.image1 = pygame.image.load("Space-side-scroller/Images/asteroid1.png").convert_alpha()
-            self.image2 = pygame.image.load("Space-side-scroller/Images/asteroid2.png").convert_alpha()
+        self.image1 = pygame.image.load("Images/asteroid1.png").convert_alpha()
+        self.image2 = pygame.image.load("Images/asteroid2.png").convert_alpha()
         
         if asteroid_choice == 1:
             self.image = self.image1

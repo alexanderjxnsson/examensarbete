@@ -14,37 +14,29 @@ class Game():
         self.UP_KEY, self.DOWN_KEY, self.START_KEY, self.BACK_KEY, self.LEFT_KEY, self.RIGHT_KEY = False, False, False, False, False, False
         self.DISPLAY_W, self.DISPLAY_H = 800, 480
         self.display = pygame.Surface((self.DISPLAY_W, self.DISPLAY_H))
-        
-        if rpi:
-            from gpiozero import Button, MCP3008
 
-            self.chanY = MCP3008(channel=0)
-            self.chanX = MCP3008(channel=1)
+        from gpiozero import Button, MCP3008
 
-            self.start_btn = Button(23)
-            self.back_btn = Button(24)
-            self.pause_btn = Button(17)
+        self.chanY = MCP3008(channel=0)
+        self.chanX = MCP3008(channel=1)
 
-            self.window = pygame.display.set_mode(((self.DISPLAY_W, self.DISPLAY_H)), pygame.FULLSCREEN)
-            self.start_btn_press = pygame.USEREVENT + 0
-            self.back_btn_press = pygame.USEREVENT + 1
-            self.pause_btn_press = pygame.USEREVENT + 2
-            self.start_event = pygame.event.Event(self.start_btn_press)
-            self.back_event = pygame.event.Event(self.back_btn_press)
-            self.pause_event = pygame.event.Event(self.pause_btn_press)
-            self.start_btn.when_pressed = self.start_pressed
-            self.back_btn.when_pressed = self.back_pressed
-            self.pause_btn.when_pressed = self.pause_pressed
+        self.start_btn = Button(23)
+        self.back_btn = Button(24)
+        self.pause_btn = Button(17)
 
-            self.font_name = 'Font/8-BIT_WONDER.TTF'
-            
-            self.bg_game_scroll = pygame.image.load('Images/bg_game_scroll.png').convert()
-        else:
-            self.window = pygame.display.set_mode(((self.DISPLAY_W, self.DISPLAY_H)))
-            self.bg_game_scroll = pygame.image.load('Space-side-scroller/Images/bg_game_scroll.png').convert()
+        self.window = pygame.display.set_mode(((self.DISPLAY_W, self.DISPLAY_H)), pygame.FULLSCREEN)
+        self.start_btn_press = pygame.USEREVENT + 0
+        self.back_btn_press = pygame.USEREVENT + 1
+        self.pause_btn_press = pygame.USEREVENT + 2
+        self.start_event = pygame.event.Event(self.start_btn_press)
+        self.back_event = pygame.event.Event(self.back_btn_press)
+        self.pause_event = pygame.event.Event(self.pause_btn_press)
+        self.start_btn.when_pressed = self.start_pressed
+        self.back_btn.when_pressed = self.back_pressed
+        self.pause_btn.when_pressed = self.pause_pressed
+        self.bg_game_scroll = pygame.image.load('Images/bg_game_scroll.png').convert()
             #self.font_name = 'Space-side-scroller/Font/8-BIT_WONDER.TTF'
             self.font_name = 'Space-side-scroller/Font/8bitOperatorPlusSC-Bold.ttf'
-    
         pygame.display.set_caption("Space Sider Scroller")
         self.BLACK, self.WHITE = (0, 0, 0), (255, 255, 255)
         self.main_menu = MainMenu(self)
@@ -113,18 +105,19 @@ class Game():
                 pygame.display.quit()
                 pygame.quit()
                 exit()
-            if rpi:
-                if event.type == self.start_btn_press:
-                        self.START_KEY = True
-                if event.type == self.back_btn_press:
-                        self.BACK_KEY = True
-                if event.type == self.pause_btn_press:
-                    if not self.main_menu.run_display:
-                        if self.paused == True:
-                            self.paused = False
-                        else:
-                            self.paused = True
-            if event.type == pygame.KEYDOWN:
+            
+            if event.type == self.start_btn_press:
+                    self.START_KEY = True
+            if event.type == self.back_btn_press:
+                    self.BACK_KEY = True
+            if event.type == self.pause_btn_press:
+                if not self.main_menu.run_display:
+                    if self.paused == True:
+                        self.paused = False
+                    else:
+                        self.paused = True
+
+            """ if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RETURN:
                     self.START_KEY = True
                 if event.key == pygame.K_BACKSPACE:
@@ -145,22 +138,22 @@ class Game():
                         if self.paused == True:
                             self.paused = False
                         else:
-                            self.paused = True
-        if rpi:
-            if (self.main_menu.joystick_timer >= 0.5) and ((self.chanY.value * 480) < 220): # Y DOWN
-                self.UP_KEY = True
-                self.main_menu.joystick_timer = 0
-            elif (self.main_menu.joystick_timer >= 0.5) and ((self.chanY.value * 480) > 260): # Y UP
-                self.DOWN_KEY = True
-                self.main_menu.joystick_timer = 0 
-            elif (self.main_menu.joystick_timer >= 0.5) and ((self.chanX.value * 800) > 420): # X RIGHT
-                self.LEFT_KEY = True
-                self.main_menu.joystick_timer = 0
-            elif (self.main_menu.joystick_timer >= 0.5) and ((self.chanX.value * 800) < 380): # X LEFT
-                self.RIGHT_KEY = True
-                self.main_menu.joystick_timer = 0
-            else:
-                self.main_menu.joystick_timer += self.main_menu.dt
+                            self.paused = True """
+                    
+        if (self.main_menu.joystick_timer >= 0.5) and ((self.chanY.value * 480) < 220): # Y DOWN
+            self.UP_KEY = True
+            self.main_menu.joystick_timer = 0
+        elif (self.main_menu.joystick_timer >= 0.5) and ((self.chanY.value * 480) > 260): # Y UP
+            self.DOWN_KEY = True
+            self.main_menu.joystick_timer = 0 
+        elif (self.main_menu.joystick_timer >= 0.5) and ((self.chanX.value * 800) > 420): # X RIGHT
+            self.LEFT_KEY = True
+            self.main_menu.joystick_timer = 0
+        elif (self.main_menu.joystick_timer >= 0.5) and ((self.chanX.value * 800) < 380): # X LEFT
+            self.RIGHT_KEY = True
+            self.main_menu.joystick_timer = 0
+        else:
+            self.main_menu.joystick_timer += self.main_menu.dt
 
     def spawn_other(self):
         # Get random numbers for spawn position and when to spawn

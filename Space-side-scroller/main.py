@@ -1,6 +1,5 @@
 from menu import *
 from game import Game
-from global_var import *
 
 g = Game()
 

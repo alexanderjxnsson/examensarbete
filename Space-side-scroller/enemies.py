@@ -1,14 +1,10 @@
 import pygame
-from global_var import *
 
 class Enemies(pygame.sprite.Sprite):
     def __init__(self, game, pos, x_const, y_const, speed):
         pygame.sprite.Sprite.__init__(self)
         self.game = game
-        if rpi:
-            self.image = pygame.image.load("Images/enemy.png").convert_alpha()
-        else:
-            self.image = pygame.image.load("Space-side-scroller/Images/enemy.png").convert_alpha()
+        self.image = pygame.image.load("Images/enemy.png").convert_alpha()
         self.rect = self.image.get_rect(center=pos)
         self.max_x_const = x_const
         self.max_y_const = y_const
@@ -26,7 +22,7 @@ class Enemies(pygame.sprite.Sprite):
     def constraint(self):
         if self.rect.left <= -150:
             self.kill()
-
+            
     def return_pos(self):
         return self.rect.x
 
@@ -51,11 +47,7 @@ class Enemies(pygame.sprite.Sprite):
 class Enemy_bullet(pygame.sprite.Sprite):
     def __init__(self, pos_x, pos_y):
         super().__init__()
-        if rpi:
-            self.image = pygame.image.load("Images/bullet_blue.png").convert_alpha()
-        else:
-            self.image = pygame.image.load("Space-side-scroller/Images/bullet_blue.png").convert_alpha()
-        #self.image.fill((255,0,0))
+        self.image = pygame.image.load("Images/bullet_blue.png").convert_alpha()
         self.rect = self.image.get_rect(center = (pos_x, pos_y))
     
     def update(self):

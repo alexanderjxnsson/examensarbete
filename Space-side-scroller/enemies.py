@@ -28,8 +28,7 @@ class Enemies(pygame.sprite.Sprite):
             self.kill()
 
     def return_pos(self):
-        val = self.rect.x
-        return val
+        return self.rect.x
 
     def update(self):
         self.move_ship()

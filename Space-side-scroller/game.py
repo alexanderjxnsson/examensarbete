@@ -11,7 +11,7 @@ class Game():
         pygame.init()
         pygame.mouse.set_visible(False)
         self.running, self.playing, self.paused = True, False, False
-        self.UP_KEY, self.DOWN_KEY, self.START_KEY, self.BACK_KEY = False, False, False, False
+        self.UP_KEY, self.DOWN_KEY, self.START_KEY, self.BACK_KEY, self.LEFT_KEY, self.RIGHT_KEY = False, False, False, False, False, False
         self.DISPLAY_W, self.DISPLAY_H = 800, 480
         self.display = pygame.Surface((self.DISPLAY_W, self.DISPLAY_H))
         
@@ -95,6 +95,7 @@ class Game():
 
     def game_initializations(self):
         self.score = 0
+        self.name = " "
         self.health = 3
         self.player_sprite = Player(self, (0, self.DISPLAY_H / 2), self.DISPLAY_W, self.DISPLAY_H)
         self.player = pygame.sprite.GroupSingle(self.player_sprite)
@@ -220,12 +221,16 @@ class Game():
             self.health -= 1
             if self.health == 0:
                 self.stats()
-                self.draw_text('GAME OVER', 40, self.DISPLAY_W / 2, self.DISPLAY_H / 2 - 100)
-                self.window.blit(self.display, (0,0))
-                pygame.display.update()
-                time.sleep(3)
+                sorted_scores = sorted(scores, key=lambda x: x[1], reverse=True)
+                if self.score <= sorted_scores[4][1]:
+                    self.draw_text('GAME OVER', 40, self.DISPLAY_W / 2, self.DISPLAY_H / 2 - 100)
+                    self.window.blit(self.display, (0,0))
+                    pygame.display.update()
+                    time.sleep(5)
+                else:
+                    self.name = self.highscore.write_name()
                 self.playing = False
-                scores.append(self.score)
+                scores.append((self.name, self.score))
         
         bullet_hit_asteroid = pygame.sprite.groupcollide(self.obstacle, self.bullet_group, True, True)
         bullet_hit_enemy = pygame.sprite.groupcollide(self.enemy_group, self.bullet_group, True, True)
@@ -233,7 +238,7 @@ class Game():
             self.score += 100
 
     def reset_keys(self):
-        self.UP_KEY, self.DOWN_KEY, self.START_KEY, self.BACK_KEY = False, False, False, False
+        self.UP_KEY, self.DOWN_KEY, self.START_KEY, self.BACK_KEY, self.RIGHT_KEY, self.LEFT_KEY = False, False, False, False, False, False
     
     ### Function to draw text on the screen
     ### Take 4 Arguments, "String" or integer, Size of the text, x coordinate, y coordinate

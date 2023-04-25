@@ -230,7 +230,7 @@ class HighscoreMenu(Menu):
             file = open(file_name, 'r')
         for line in file.readlines():
             name, score = line.strip().split()
-            scores.append ((name, int(score)))
+            scores.append((name, int(score)))
         file.close()
 
     def write_highscore():

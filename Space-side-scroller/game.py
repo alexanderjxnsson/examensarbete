@@ -35,8 +35,8 @@ class Game():
         self.back_btn.when_pressed = self.back_pressed
         self.pause_btn.when_pressed = self.pause_pressed
         self.bg_game_scroll = pygame.image.load('Images/bg_game_scroll.png').convert()
-            #self.font_name = 'Space-side-scroller/Font/8-BIT_WONDER.TTF'
-            self.font_name = 'Space-side-scroller/Font/8bitOperatorPlusSC-Bold.ttf'
+        #self.font_name = 'Space-side-scroller/Font/8-BIT_WONDER.TTF'
+        self.font_name = 'Space-side-scroller/Font/8bitOperatorPlusSC-Bold.ttf'
         pygame.display.set_caption("Space Sider Scroller")
         self.BLACK, self.WHITE = (0, 0, 0), (255, 255, 255)
         self.main_menu = MainMenu(self)

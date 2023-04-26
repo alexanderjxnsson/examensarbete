@@ -11,7 +11,7 @@ class Menu():
         self.mid_w, self.mid_h = self.game.DISPLAY_W / 2, self.game.DISPLAY_H / 2
         self.run_display = True
         self.cursor_rect = pygame.Rect(0, 0, 20, 20)
-        self.offset = -200
+        self.offset = -150
         if rpi:
             self.bg_img_menu = pygame.image.load('Images/menu_background.jpg').convert()
             self.ahlm_logo = pygame.image.load('Images/ahlm.png').convert_alpha()
@@ -19,7 +19,7 @@ class Menu():
             self.bg_img_menu = pygame.image.load('Space-side-scroller/Images/menu_background.jpg').convert()
             self.ahlm_logo = pygame.image.load('Space-side-scroller/Images/ahlm.png').convert_alpha()
     def draw_cursor(self):
-        self.game.draw_text('*', 15, self.cursor_rect.x, self.cursor_rect.y)
+        self.game.draw_text('*', 25, self.cursor_rect.x, self.cursor_rect.y)
 
     def blit_screen(self):
         self.game.window.blit(self.game.display, (0, 0))
@@ -101,16 +101,20 @@ class MainMenu(Menu):
 class HighscoreMenu(Menu):
     def __init__(self, game):
         Menu.__init__(self, game)
+        self.offset = -200
         self.highscorex, self.highscorey = self.mid_w, self.mid_h - 50
-        self.startx, self.starty = self.mid_w + 7, self.mid_h + 25
+        self.startx, self.starty = self.mid_w + 10, self.mid_h + 25
         self.cursor_rect = pygame.Rect(0, 0, 20, 20)
         self.cursor_rect.midtop = ((self.startx + self.offset), self.starty)
         self.state = 'First'
         self.firstChar, self.secondChar, self.thirdChar, self.fourthChar = 65, 65, 65, 65
         self.highscoreName = " "
 
-    def draw_cursor_name(self):
-        self.game.draw_text("[  ]", 50, self.cursor_rect.x, self.cursor_rect.y)
+    def draw_char_cursor(self):
+        self.game.draw_text("^", 50, self.cursor_rect.x, self.cursor_rect.y - 15)
+        self.game.draw_text("<  >", 50, self.cursor_rect.x, self.cursor_rect.y)
+        # ASCII value 711 is a arrow down char
+        self.game.draw_text(chr(711), 50, self.cursor_rect.x, self.cursor_rect.y + 43)
 
     def display_menu(self):
         sorted_scores = sorted(scores, key=lambda x: x[1], reverse=True)
@@ -127,24 +131,24 @@ class HighscoreMenu(Menu):
             self.game.draw_text(str(sorted_scores[4][0]) + " " + str(sorted_scores[4][1]), 35, self.highscorex, self.highscorey + 160)
             self.blit_screen()
 
-    def write_name(self):
+    def writename_menu(self):
         self.run_display = True
         while self.run_display:
             self.game.check_events()
-            self.check_input_name()
+            self.check_input_writename()
             self.game.display.blit(self.bg_img_menu, (0,0))
-            self.game.draw_text('Write your name', 40, self.game.DISPLAY_W / 2, self.game.DISPLAY_H / 2 - 100)
+            self.game.draw_text('Write your name', 40, self.game.DISPLAY_W / 2, self.game.DISPLAY_H / 2 - 80)
             self.game.draw_text(chr(self.firstChar), 35, 0 + 200, self.game.DISPLAY_H / 2 + 25)
             self.game.draw_text(chr(self.secondChar), 35, 0 + 300, self.game.DISPLAY_H / 2 + 25)
             self.game.draw_text(chr(self.thirdChar), 35, 0 + 400, self.game.DISPLAY_H / 2 + 25)
             self.game.draw_text(chr(self.fourthChar), 35, 0 + 500, self.game.DISPLAY_H / 2 + 25)
             self.game.draw_text('*', 35, 0 + 600, self.game.DISPLAY_H / 2 + 25)
-            self.draw_cursor_name()
+            self.draw_char_cursor()
             self.blit_screen()
             if self.run_display == False:
                 return self.highscoreName
             
-    def move_cursor_name(self):
+    def move_cursor_writename(self):
         if self.game.RIGHT_KEY:
             if self.state == 'First':
                 self.cursor_rect = pygame.Rect.move(self.cursor_rect, 100, 0)
@@ -179,8 +183,8 @@ class HighscoreMenu(Menu):
                 self.cursor_rect = pygame.Rect.move(self.cursor_rect, -100, 0)
                 self.state = 'Fourth'
     
-    def check_input_name(self):
-        self.move_cursor_name()
+    def check_input_writename(self):
+        self.move_cursor_writename()
         if self.game.UP_KEY:
             if self.state == 'First':
                 self.firstChar += -1
@@ -231,7 +235,6 @@ class HighscoreMenu(Menu):
         for line in file.readlines():
             name, score = line.strip().split()
             scores.append ((name, int(score)))
-
         file.close()
 
     def write_highscore():
@@ -270,6 +273,7 @@ class QuitMenu(Menu):
     def __init__(self, game):
         Menu.__init__(self, game)
         self.state = 'No'
+        self.offset = -100
         self.nox, self.noy = self.mid_w, self.mid_h + 20
         self.yesx, self.yesy = self.mid_w, self.mid_h + 60
         self.cursor_rect.midtop = ((self.nox + self.offset), self.noy)

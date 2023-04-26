@@ -37,11 +37,13 @@ class Game():
             self.pause_btn.when_pressed = self.pause_pressed
 
             self.font_name = 'Font/8-BIT_WONDER.TTF'
+            
             self.bg_game_scroll = pygame.image.load('Images/bg_game_scroll.png').convert()
         else:
             self.window = pygame.display.set_mode(((self.DISPLAY_W, self.DISPLAY_H)))
             self.bg_game_scroll = pygame.image.load('Space-side-scroller/Images/bg_game_scroll.png').convert()
-            self.font_name = 'Space-side-scroller/Font/8-BIT_WONDER.TTF'
+            #self.font_name = 'Space-side-scroller/Font/8-BIT_WONDER.TTF'
+            self.font_name = 'Space-side-scroller/Font/8bitOperatorPlusSC-Bold.ttf'
     
         pygame.display.set_caption("Space Sider Scroller")
         self.BLACK, self.WHITE = (0, 0, 0), (255, 255, 255)
@@ -228,7 +230,7 @@ class Game():
                     pygame.display.update()
                     time.sleep(5)
                 else:
-                    self.name = self.highscore.write_name()
+                    self.name = self.highscore.writename_menu()
                 self.playing = False
                 scores.append((self.name, self.score))
         
